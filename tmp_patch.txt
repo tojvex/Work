@@ -1,0 +1,89 @@
+*** Begin Patch
+*** Update File: landing-app/src/app/page.tsx
+@@
+-          >
+-            {heroItems.map((item) => {
+-              const mobileBaseImage =
+-                isDarkTheme && item.mobileDarkSrc
+-                  ? item.mobileDarkSrc
+-                  : item.mobileLightSrc;
+-              const mobileHoverImage =
+-                isDarkTheme && item.mobileHoverDarkSrc
+-                  ? item.mobileHoverDarkSrc
+-                  : item.mobileHoverLightSrc ??
+-                    (isDarkTheme && item.hoverDarkSrc
+-                      ? item.hoverDarkSrc
+-                      : item.hoverLightSrc);
+-              const isActive = activeCard?.id === item.id;
+-              return (
+-                <button
+-                  key={`${item.id}-mobile`}
+-                type="button"
+-                onClick={() => item.card && setActiveCard(item)}
+-                className={`group absolute ${item.mobileClass} border-0 bg-transparent p-0 ${item.card ? "cursor-pointer" : "cursor-default"}`}
+-                aria-label={
+-                  item.card
+-                    ? `${item.card.heading} ??T??o????~?~??? "?"???s?"?`?~`
+-                    : undefined
+-                }
+-                disabled={!item.card}
+-              >
+-                <Image
+-                  src={mobileBaseImage}
+-                  alt={item.alt}
+-                  className={`h-auto w-full transition-opacity duration-200 ${isActive ? "opacity-0" : "opacity-100"} group-hover:opacity-0`}
+-                />
+-                <Image
+-                  src={mobileHoverImage}
+-                  alt=""
+-                  className={`absolute left-0 top-0 h-auto w-full transition-opacity duration-200 ${isActive ? "opacity-100" : "opacity-0"} group-hover:opacity-100`}
+-                  aria-hidden
+-                />
+-              </button>
+-            )})}
++          >
++            {heroItems.map((item) => {
++              const mobileBaseImage =
++                isDarkTheme && item.mobileDarkSrc
++                  ? item.mobileDarkSrc
++                  : item.mobileLightSrc;
++              const mobileHoverImage =
++                isDarkTheme && item.mobileHoverDarkSrc
++                  ? item.mobileHoverDarkSrc
++                  : item.mobileHoverLightSrc ??
++                    (isDarkTheme && item.hoverDarkSrc
++                      ? item.hoverDarkSrc
++                      : item.hoverLightSrc);
++              const hasHoverImage = Boolean(mobileHoverImage);
++              const isActive = activeCard?.id === item.id;
++
++              return (
++                <button
++                  key={`${item.id}-mobile`}
++                  type="button"
++                  onClick={() => item.card && setActiveCard(item)}
++                  className={`group absolute ${item.mobileClass} border-0 bg-transparent p-0 ${item.card ? "cursor-pointer" : "cursor-default"}`}
++                  aria-label={
++                    item.card
++                      ? `${item.card.heading} ??T??o????~?~??? "?"???s?"?`?~`
++                      : undefined
++                  }
++                  disabled={!item.card}
++                >
++                  <Image
++                    src={mobileBaseImage}
++                    alt={item.alt}
++                    className={`h-auto w-full transition-opacity duration-200 ${isActive ? "opacity-0" : "opacity-100"} ${hasHoverImage ? "group-hover:opacity-0" : ""}`}
++                  />
++                  {hasHoverImage && (
++                    <Image
++                      src={mobileHoverImage}
++                      alt=""
++                      className={`absolute left-0 top-0 h-auto w-full transition-opacity duration-200 ${isActive ? "opacity-100" : "opacity-0"} group-hover:opacity-100`}
++                      aria-hidden
++                    />
++                  )}
++                </button>
++              );
++            })}
+*** End Patch
