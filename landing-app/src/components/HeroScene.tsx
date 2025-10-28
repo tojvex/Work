@@ -38,7 +38,7 @@ export default function HeroScene({
             : { background: "#dedddd" }
         }
       >
-        <div className="relative aspect-1365/768 w-full">
+        <div className="relative aspect-[1365/640] w-full">
           {items.map((item) => {
             const baseImage = isDarkTheme && item.darkSrc ? item.darkSrc : item.lightSrc;
             const hoverImage =

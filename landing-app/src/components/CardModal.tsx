@@ -92,7 +92,7 @@ export default function CardModal({ card, onClose }: CardModalProps) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 h-8 w-8 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="absolute right-4 top-4 h-8 w-8 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white"
           aria-label="დახურვა"
         />
         <button
