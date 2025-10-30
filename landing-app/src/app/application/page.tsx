@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import ApplicationForm from "@/components/ApplicationForm";
@@ -8,6 +8,14 @@ import HeroHeader from "@/components/HeroHeader";
 import { getApplicationOptions } from "@/data/applicationOptions";
 
 export default function ApplicationPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#dedddd]" />}>
+      <ApplicationPageContent />
+    </Suspense>
+  );
+}
+
+function ApplicationPageContent() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const isDarkTheme = theme === "dark";
 
