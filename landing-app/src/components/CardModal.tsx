@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import type { HeroItemWithCard } from "@/data/heroItems";
@@ -15,12 +16,23 @@ export default function CardModal({ card, onClose }: CardModalProps) {
   const pendingCardRef = useRef<HeroItemWithCard | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!card) {
       pendingCardRef.current = null;
-      setRenderedCard(null);
-      return;
+
+      Promise.resolve().then(() => {
+        if (!cancelled) {
+          setRenderedCard(null);
+        }
+      });
+
+      return () => {
+        cancelled = true;
+      };
     }
 
     pendingCardRef.current = card;
@@ -28,7 +40,7 @@ export default function CardModal({ card, onClose }: CardModalProps) {
     image.src = card.card.image.src;
 
     const resolve = () => {
-      if (pendingCardRef.current?.id === card.id) {
+      if (!cancelled && pendingCardRef.current?.id === card.id) {
         setRenderedCard(card);
         pendingCardRef.current = null;
       }
@@ -36,13 +48,13 @@ export default function CardModal({ card, onClose }: CardModalProps) {
 
     if (image.complete) {
       resolve();
-      return;
+    } else {
+      image.addEventListener("load", resolve);
+      image.addEventListener("error", resolve);
     }
 
-    image.addEventListener("load", resolve);
-    image.addEventListener("error", resolve);
-
     return () => {
+      cancelled = true;
       image.removeEventListener("load", resolve);
       image.removeEventListener("error", resolve);
     };
@@ -69,6 +81,14 @@ export default function CardModal({ card, onClose }: CardModalProps) {
     return null;
   }
 
+  const handleApplyClick = () => {
+    onClose();
+    const target = renderedCard.id
+      ? `/application?card=${encodeURIComponent(renderedCard.id)}`
+      : "/application";
+    router.push(target);
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
@@ -85,22 +105,22 @@ export default function CardModal({ card, onClose }: CardModalProps) {
       >
         <Image
           src={renderedCard.card.image}
-          alt={`${renderedCard.card.heading} ვაკანსიის ბარათი`}
+          alt={renderedCard.card.heading}
           className="h-auto w-full"
           priority
         />
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 h-8 w-8 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white"
-          aria-label="დახურვა"
+          className="absolute right-4 top-4 h-8 w-8 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white"
+          aria-label="Close modal"
         />
         <button
           type="button"
-          className="absolute bottom-4 left-1/2 w-[50%] -translate-x-1/2 rounded-full bg-[#1DA94A] py-3 text-base font-semibold text-white shadow transition hover:bg-[#17853a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          onClick={() => {}}
+          className="absolute bottom-3 left-1/2 w-[60%] -translate-x-1/2 cursor-pointer rounded-2xl bg-[#1DA94A] py-4 text-base font-semibold text-white shadow transition hover:bg-[#17853a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          onClick={handleApplyClick}
         >
-          გაგზავნა
+          არჩევა
         </button>
       </div>
     </div>

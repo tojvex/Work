@@ -5,6 +5,7 @@ import { useState } from "react";
 import CardModal from "@/components/CardModal";
 import HeroHeader from "@/components/HeroHeader";
 import HeroScene from "@/components/HeroScene";
+import IntroDoor from "@/components/IntroDoor";
 import {
   HEADLINE,
   heroItems,
@@ -32,11 +33,11 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#E4E3E3]">
+      <IntroDoor />
       <HeroHeader
         headline={HEADLINE}
         isDarkTheme={isDarkTheme}
         onToggleTheme={() => setTheme(isDarkTheme ? "light" : "dark")}
-        onSelectTheme={setTheme}
       />
 
       <main

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-
 import type { HeroItem } from "@/data/heroItems";
 
 type HeroSceneProps = {
@@ -12,6 +11,11 @@ type HeroSceneProps = {
   onSelectItem: (item: HeroItem) => void;
 };
 
+const DARK_MODE_DISABLED_IDS = new Set(["kitchen", "baker", "butchery", "warehouse"]);
+
+const shouldDisableInDarkMode = (item: HeroItem, isDarkTheme: boolean) =>
+  isDarkTheme && DARK_MODE_DISABLED_IDS.has(item.id);
+
 export default function HeroScene({
   headline,
   items,
@@ -21,15 +25,17 @@ export default function HeroScene({
 }: HeroSceneProps) {
   return (
     <div className="flex w-full max-w-7xl flex-col items-stretch lg:items-center">
+      {/* Mobile headline */}
       <div className="px-4 pt-5 pb-3 lg:hidden">
         <h1
-          className={`text-center text-2xl font-bold tracking-wide leading-tight sm:text-3xl md:text-4xl ${
-            isDarkTheme ? "text-white" : "text-[#1DA94A]"
-          }`}
+          className="text-center text-2xl font-normal leading-tight tracking-wide text-white sm:text-3xl md:text-4xl"
+          style={{ fontFamily: "DejaVu Sans" }}
         >
           {headline}
         </h1>
       </div>
+
+      {/* Desktop scene */}
       <div
         className="relative hidden w-full lg:block"
         style={
@@ -44,37 +50,51 @@ export default function HeroScene({
             const hoverImage =
               isDarkTheme && item.hoverDarkSrc ? item.hoverDarkSrc : item.hoverLightSrc;
 
+            const disabledInDark = shouldDisableInDarkMode(item, isDarkTheme);
+            const canActivate = Boolean(item.card) && !disabledInDark;
+            const showHoverSwap = canActivate && Boolean(hoverImage);
+
+            // Accessible label only if clickable; otherwise let img alt handle it.
+            const ariaLabel = canActivate ? (item.card?.heading ?? item.alt) : undefined;
+
             return (
               <button
                 key={item.id}
                 type="button"
-                onClick={() => onSelectItem(item)}
+                onClick={() => {
+                  if (canActivate) onSelectItem(item);
+                }}
                 className={`group absolute ${item.desktopClass} border-0 bg-transparent p-0 ${
-                  item.card ? "cursor-pointer" : "cursor-default"
+                  canActivate ? "cursor-pointer" : "cursor-default"
                 }`}
-                aria-label={item.card ? `${item.card.heading} ვაკანსიის ბარათი` : undefined}
-                disabled={!item.card}
+                aria-label={ariaLabel}
+                disabled={!canActivate}
               >
                 <Image
                   src={baseImage}
                   alt={item.alt}
-                  className="h-auto w-full transition-opacity duration-200 group-hover:opacity-0"
+                  className={`h-auto w-full ${
+                    showHoverSwap ? "transition-opacity duration-200 group-hover:opacity-0" : ""
+                  }`}
                   priority={item.id === "service"}
                 />
-                <Image
-                  src={hoverImage}
-                  alt=""
-                  className="absolute left-0 top-0 h-auto w-full opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                  aria-hidden
-                />
+                {showHoverSwap && (
+                  <Image
+                    src={hoverImage!}
+                    alt=""
+                    className="absolute left-0 top-0 h-auto w-full opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                    aria-hidden={true}
+                  />
+                )}
               </button>
             );
           })}
         </div>
       </div>
 
+      {/* Mobile scene */}
       <div
-        className="relative mt-0 w-full aspect-9/16 lg:hidden"
+        className="relative mt-0 w-full aspect-[9/16] lg:hidden"
         style={
           isDarkTheme
             ? { background: "linear-gradient(180deg, #363264 0%, #201C49 100%)" }
@@ -84,24 +104,32 @@ export default function HeroScene({
         {items.map((item) => {
           const mobileBaseImage =
             isDarkTheme && item.mobileDarkSrc ? item.mobileDarkSrc : item.mobileLightSrc;
+
           const mobileHoverImage =
             isDarkTheme && item.mobileHoverDarkSrc
               ? item.mobileHoverDarkSrc
               : item.mobileHoverLightSrc ??
                 (isDarkTheme && item.hoverDarkSrc ? item.hoverDarkSrc : item.hoverLightSrc);
-          const hasHoverImage = Boolean(mobileHoverImage);
+
+          const disabledInDark = shouldDisableInDarkMode(item, isDarkTheme);
+          const canActivate = Boolean(item.card) && !disabledInDark;
+          const hasHoverImage = canActivate && Boolean(mobileHoverImage);
           const isActive = activeCardId === item.id;
+
+          const ariaLabel = canActivate ? (item.card?.heading ?? item.alt) : undefined;
 
           return (
             <button
               key={`${item.id}-mobile`}
               type="button"
-              onClick={() => onSelectItem(item)}
+              onClick={() => {
+                if (canActivate) onSelectItem(item);
+              }}
               className={`group absolute ${item.mobileClass} border-0 bg-transparent p-0 ${
-                item.card ? "cursor-pointer" : "cursor-default"
+                canActivate ? "cursor-pointer" : "cursor-default"
               }`}
-              aria-label={item.card ? `${item.card.heading} ვაკანსიის ბარათი` : undefined}
-              disabled={!item.card}
+              aria-label={ariaLabel}
+              disabled={!canActivate}
             >
               <Image
                 src={mobileBaseImage}
@@ -112,12 +140,12 @@ export default function HeroScene({
               />
               {hasHoverImage && (
                 <Image
-                  src={mobileHoverImage}
+                  src={mobileHoverImage!}
                   alt=""
                   className={`absolute left-0 top-0 h-auto w-full transition-opacity duration-200 ${
                     isActive ? "opacity-100" : "opacity-0"
                   } group-hover:opacity-100`}
-                  aria-hidden
+                  aria-hidden={true}
                 />
               )}
             </button>

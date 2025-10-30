@@ -6,49 +6,49 @@ import Baker from "@/media/TONE.png";
 import BakerMobile from "@/media/TONEMobile.png";
 import Kitchen from "@/media/Kitchen.png";
 import KitchenMobile from "@/media/KitchenMobile.png";
-import KitchenDark from "@/media/kitchendark.png";
+import KitchenDarkMode from "@/media/kitchenDarkMode.png";
+import KitchenHover from "@/media/kitchenhover.png";
+import KitchenHoverDark from "@/media/kitchenhoverdark.png";
+import KitchenHoverMobile from "@/media/kitchenhoverMobile.png";
+import KitchenHoverMobileDark from "@/media/kitchenhoverMobileDark.png";
 import Butchery from "@/media/Butchery.png";
 import ButcheryMobile from "@/media/ButcheryMobile.png";
+import ButcheryDarkMode from "@/media/ButcheryDarkMode.png";
+import ButcheryHover from "@/media/butcheryhover.png";
+import ButcheryHoverDark from "@/media/butcheryhoverdark.png";
+import ButcheryHoverMobile from "@/media/butcheryhoverMobile.png";
+import ButcheryHoverMobileDark from "@/media/butcheryhoverMobileDark.png";
 import Cashier from "@/media/Cashier.png";
 import CashierMobile from "@/media/CashierMobile.png";
 import MainScene from "@/media/Main.png";
 import MainMobile from "@/media/MainMobile.png";
 import Warehouse from "@/media/Warehouse.png";
 import WarehouseMobile from "@/media/WarehouseMobile.png";
-import WarehouseDark from "@/media/warehousedark.png";
+import WarehouseDarkMode from "@/media/warehouseDarkMode.png";
+import WarehouseHover from "@/media/warehousehover.png";
 import Delivery from "@/media/Delivery.png";
 import CourierMobile from "@/media/CourierMobile.png";
 import SecurityHover from "@/media/securityhover.png";
 import SecurityHoverDark from "@/media/securityhoverdark.png";
+import BakerDarkMode from "@/media/toneDarkMode.png";
 import BakerHover from "@/media/tonehover.png";
 import BakerHoverDark from "@/media/tonehoverdark.png";
-import KitchenHover from "@/media/kitchenhover.png";
-import KitchenHoverDark from "@/media/kitchenhoverdark.png";
-import ButcheryHover from "@/media/butcheryhover.png";
-import ButcheryHoverDark from "@/media/butcheryhoverdark.png";
 import CashierHover from "@/media/cashierhover.png";
 import CashierHoverDark from "@/media/cashierhoverdark.png";
 import MainSceneHover from "@/media/mainhover.png";
 import MainSceneHoverDark from "@/media/mainhoverdark.png";
-import WarehouseHover from "@/media/warehousehover.png";
-import WarehouseHoverDark from "@/media/warehousehoverdark.png";
 import DeliveryHover from "@/media/deliveryhover.png";
 import DeliveryHoverDark from "@/media/deliveryhoverdark.png";
 import SecurityHoverMobile from "@/media/securityhoverMobile.png";
 import BakerHoverMobile from "@/media/tonehoverMobile.png";
-import KitchenHoverMobile from "@/media/kitchenhoverMobile.png";
-import ButcheryHoverMobile from "@/media/butcheryhoverMobile.png";
 import CashierHoverMobile from "@/media/cashierhoverMobile.png";
 import MainHoverMobile from "@/media/mainhoverMobile.png";
 import WarehouseHoverMobile from "@/media/warehousehoverMobile.png";
 import DeliveryHoverMobile from "@/media/deliveryhoverMobile.png";
 import SecurityHoverMobileDark from "@/media/securityhoverMobileDark.png";
 import BakerHoverMobileDark from "@/media/tonehoverMobileDark.png";
-import KitchenHoverMobileDark from "@/media/kitchenhoverMobileDark.png";
-import ButcheryHoverMobileDark from "@/media/butcheryhoverMobileDark.png";
 import CashierHoverMobileDark from "@/media/cashierhoverMobileDark.png";
 import MainHoverMobileDark from "@/media/mainhoverMobileDark.png";
-import WarehouseHoverMobileDark from "@/media/warehousehoverMobileDark.png";
 import DeliveryHoverMobileDark from "@/media/deliveryhoverMobileDark.png";
 import SecurityCard from "@/media/SecurityCard.png";
 import BakeryCard from "@/media/BakeryCard.png";
@@ -59,7 +59,7 @@ import ServiceCard from "@/media/ServiceCard.png";
 import WarehouseCard from "@/media/WarehouseCard.png";
 
 export const HEADLINE =
-  "\u10e0\u10dd\u10db\u10d4\u10da\u0020\u10e1\u10d4\u10e5\u10ea\u10d8\u10d0\u10e8\u10d8\u0020\u10d2\u10e1\u10e3\u10e0\u10e1\u0020\u10d3\u10d0\u10e1\u10d0\u10e5\u10db\u10d4\u10d1\u10d0\u003f";
+  "იპოვე შენი ადგილი აგროჰაბში";
 
 export type HeroCardDetails = {
   image: StaticImageData;
@@ -107,12 +107,13 @@ export const heroItems: HeroItem[] = [
   {
     id: "baker",
     lightSrc: Baker,
-    darkSrc: Baker,
+    darkSrc: BakerDarkMode,
     hoverLightSrc: BakerHover,
     hoverDarkSrc: BakerHoverDark,
     alt: "Baker preparing fresh bread",
     desktopClass: "left-[31%] top-[4%] w-[14%]",
     mobileLightSrc: BakerMobile,
+    mobileDarkSrc: BakerDarkMode,
     mobileHoverLightSrc: BakerHoverMobile,
     mobileHoverDarkSrc: BakerHoverMobileDark,
     mobileClass: "left-[37%] top-[52%] w-[30%]",
@@ -129,12 +130,13 @@ export const heroItems: HeroItem[] = [
   {
     id: "kitchen",
     lightSrc: Kitchen,
-    darkSrc: KitchenDark,
+    darkSrc: KitchenDarkMode,
     hoverLightSrc: KitchenHover,
     hoverDarkSrc: KitchenHoverDark,
     alt: "Prepared food station inside a kitchen",
     desktopClass: "left-[50%] top-[10%] w-[17%]",
     mobileLightSrc: KitchenMobile,
+    mobileDarkSrc: KitchenDarkMode,
     mobileHoverLightSrc: KitchenHoverMobile,
     mobileHoverDarkSrc: KitchenHoverMobileDark,
     mobileClass: "left-[42%] top-[8%] w-[38%]",
@@ -155,12 +157,13 @@ export const heroItems: HeroItem[] = [
   {
     id: "butchery",
     lightSrc: Butchery,
-    darkSrc: Butchery,
+    darkSrc: ButcheryDarkMode,
     hoverLightSrc: ButcheryHover,
     hoverDarkSrc: ButcheryHoverDark,
     alt: "Butcher working at a meat station",
     desktopClass: "left-[72%] top-[6%] w-[14%]",
     mobileLightSrc: ButcheryMobile,
+    mobileDarkSrc: ButcheryDarkMode,
     mobileHoverLightSrc: ButcheryHoverMobile,
     mobileHoverDarkSrc: ButcheryHoverMobileDark,
     mobileClass: "left-[75%] top-[14%] w-[23%]",
@@ -219,14 +222,15 @@ export const heroItems: HeroItem[] = [
   {
     id: "warehouse",
     lightSrc: Warehouse,
-    darkSrc: WarehouseDark,
+    darkSrc: WarehouseDarkMode,
     hoverLightSrc: WarehouseHover,
-    hoverDarkSrc: WarehouseHoverDark,
+    hoverDarkSrc: WarehouseDarkMode,
     alt: "Warehouse worker moving packaged goods",
     desktopClass: "left-[66%] top-[41%] w-[22%]",
     mobileLightSrc: WarehouseMobile,
+    mobileDarkSrc: WarehouseDarkMode,
     mobileHoverLightSrc: WarehouseHoverMobile,
-    mobileHoverDarkSrc: WarehouseHoverMobileDark,
+    mobileHoverDarkSrc: WarehouseDarkMode,
     mobileClass: "left-[64%] top-[38%] w-[35%]",
     card: {
       image: WarehouseCard,
@@ -252,3 +256,12 @@ export const heroItems: HeroItem[] = [
     mobileClass: "left-[0%] top-[32%] w-[29%]",
   },
 ];
+
+
+
+
+
+
+
+
+
