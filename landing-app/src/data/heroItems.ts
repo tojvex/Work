@@ -49,7 +49,6 @@ import SecurityHoverMobileDark from "@/media/securityhoverMobileDark.png";
 import BakerHoverMobileDark from "@/media/tonehoverMobileDark.png";
 import CashierHoverMobileDark from "@/media/cashierhoverMobileDark.png";
 import MainHoverMobileDark from "@/media/mainhoverMobileDark.png";
-import DeliveryHoverMobileDark from "@/media/deliveryhoverMobileDark.png";
 import SecurityCard from "@/media/SecurityCard.png";
 import BakeryCard from "@/media/BakeryCard.png";
 import KitchenCard from "@/media/KitchenCard.png";
@@ -265,8 +264,6 @@ export const heroItems: HeroItem[] = [
     },
   },
 ];
-
-
 
 
 
