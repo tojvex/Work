@@ -252,8 +252,17 @@ export const heroItems: HeroItem[] = [
     desktopClass: "left-[10%] top-[48%] w-[16%]",
     mobileLightSrc: CourierMobile,
     mobileHoverLightSrc: DeliveryHoverMobile,
-    mobileHoverDarkSrc: DeliveryHoverMobileDark,
+    mobileHoverDarkSrc: DeliveryHoverDark,
     mobileClass: "left-[0%] top-[32%] w-[29%]",
+    card: {
+      image: ServiceCard,
+      heading: "\u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8",
+      points: [
+        "\u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
+        "\u10da\u10d0\u10e1\u10d8 \u10ea\u10d5\u10d4\u10da\u10d8\u10e1 \u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
+        "\u10db\u10d8\u10d7\u10d0\u10dc\u10d8\u10e1 \u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8\u10e1 \u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
+      ],
+    },
   },
 ];
 
