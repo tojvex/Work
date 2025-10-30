@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const DOOR_ANIMATION_DURATION = 700;
+const DOOR_ANIMATION_DURATION = 1500;
 
 export default function IntroDoor() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,43 +41,48 @@ export default function IntroDoor() {
   }
 
   return (
-    <div className="fixed inset-0 z-999 flex items-stretch justify-center bg-black">
-      <div className="relative flex h-full w-full max-w-screen-2xl overflow-hidden">
-        <button
-          type="button"
-          className="relative h-full w-1/2 cursor-pointer border-none bg-transparent p-0"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open the door"
-        >
-          <Image
-            src="/intro-door-left.png"
-            alt="Left door"
-            fill
-            priority
-            sizes="50vw"
-            className={`object-cover object-left transition-transform duration-[${DOOR_ANIMATION_DURATION}ms] ease-in ${
-              isOpen ? "-translate-x-full" : "translate-x-0"
-            }`}
-          />
-        </button>
-        <button
-          type="button"
-          className="relative h-full w-1/2 cursor-pointer border-none bg-transparent p-0"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open the door"
-        >
-          <Image
-            src="/intro-door-right.png"
-            alt="Right door"
-            fill
-            priority
-            sizes="50vw"
-            className={`object-cover object-right transition-transform duration-[${DOOR_ANIMATION_DURATION}ms] ease-in ${
-              isOpen ? "translate-x-full" : "translate-x-0"
-            }`}
-          />
-        </button>
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black">
+      <div className="relative aspect-video w-full max-w-screen-xl overflow-hidden">
+        <div className="absolute inset-0 flex">
+          <button
+            type="button"
+            className="relative h-full w-1/2 cursor-pointer border-none bg-transparent p-0"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open the door"
+          >
+            <Image
+              src="/intro-door-left.png"
+              alt="Left door"
+              fill
+              priority
+              sizes="50vw"
+              className={`object-cover object-left transition-transform ease-in-out ${
+                isOpen ? "-translate-x-full" : "translate-x-0"
+              }`}
+              style={{ transitionDuration: `${DOOR_ANIMATION_DURATION}ms` }}
+            />
+          </button>
+          <button
+            type="button"
+            className="relative h-full w-1/2 cursor-pointer border-none bg-transparent p-0"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open the door"
+          >
+            <Image
+              src="/intro-door-right.png"
+              alt="Right door"
+              fill
+              priority
+              sizes="50vw"
+              className={`object-cover object-right transition-transform ease-in-out ${
+                isOpen ? "translate-x-full" : "translate-x-0"
+              }`}
+              style={{ transitionDuration: `${DOOR_ANIMATION_DURATION}ms` }}
+            />
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
