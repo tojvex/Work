@@ -55,6 +55,7 @@ import KitchenCard from "@/media/KitchenCard.png";
 import ButcheryCard from "@/media/ButcheryCard.png";
 import CashierCard from "@/media/CashierCard.png";
 import ServiceCard from "@/media/ServiceCard.png";
+import DeliveryCard from "@/media/DeliveryCard.png";
 import WarehouseCard from "@/media/WarehouseCard.png";
 
 export const HEADLINE =
@@ -250,15 +251,14 @@ export const heroItems: HeroItem[] = [
     alt: "Delivery courier arriving on a scooter",
     desktopClass: "left-[10%] top-[48%] w-[16%]",
     mobileLightSrc: CourierMobile,
-    mobileHoverLightSrc: DeliveryHoverMobile,
+    mobileHoverLightSrc: DeliveryHover,
     mobileHoverDarkSrc: DeliveryHoverDark,
     mobileClass: "left-[0%] top-[32%] w-[29%]",
     card: {
-      image: ServiceCard,
-      heading: "\u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8",
+      image: DeliveryCard,
+      heading: "\u10db\u10d8\u10d7\u10d0\u10dc\u10d8\u10e1 \u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8",
       points: [
-        "\u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
-        "\u10da\u10d0\u10e1\u10d8 \u10ea\u10d5\u10d4\u10da\u10d8\u10e1 \u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
+        "\u10d0\u10e0\u10dd\u10ec\u10d8, \u10e0\u10dd\u10db\u10d4\u10da \u10d9\u10dd\u10db\u10de\u10d0\u10dc\u10d8\u10d0\u10d6\u10d4 \u10db\u10e1\u10d0\u10d5\u10e1 \u10d3\u10d0\u10d3\u10e1\u10d0\u10e7\u10d0\u10da\u10d4\u10d1\u10d0",
         "\u10db\u10d8\u10d7\u10d0\u10dc\u10d8\u10e1 \u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8\u10e1 \u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
       ],
     },

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
 
@@ -16,6 +16,12 @@ type ApplicationSubmissionPayload = Omit<
   ApplicationFormValues,
   "privacyConsent"
 >;
+
+type FieldErrors = {
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+};
 
 const initialValues: ApplicationFormValues = {
   firstName: "",
@@ -51,6 +57,13 @@ export default function ApplicationForm({
   >("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // NEW: field-level errors state
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({
+    firstName: null,
+    lastName: null,
+    phone: null,
+  });
+
   useEffect(() => {
     setValues((prev) => {
       const next = { ...prev };
@@ -75,14 +88,59 @@ export default function ApplicationForm({
       ...prev,
       [field]: value,
     }));
+
+    // Clear the error for this field as user edits
+    if (field === "firstName" || field === "lastName" || field === "phone") {
+      setFieldErrors((prev) => ({ ...prev, [field]: null }));
+    }
   };
 
   const resetForm = () => {
     setValues(initialValues);
+    setFieldErrors({ firstName: null, lastName: null, phone: null });
+  };
+
+  // NEW: validation helper
+  const validateFields = (v: ApplicationFormValues): FieldErrors => {
+    const errors: FieldErrors = { firstName: null, lastName: null, phone: null };
+
+    // Only letters (Unicode letters), no spaces/symbols
+    const lettersOnly = /^[\p{L}]+$/u;
+
+    if (!v.firstName.trim()) {
+      errors.firstName = "Required";
+    } else if (!lettersOnly.test(v.firstName.trim())) {
+      errors.firstName = "ჩაწერეთ მხოლოდ ტექსტი";
+    }
+
+    if (!v.lastName.trim()) {
+      errors.lastName = "Required";
+    } else if (!lettersOnly.test(v.lastName.trim())) {
+      errors.lastName = "ჩაწერეთ მხოლოდ ტექსტი";
+    }
+
+    // Exactly 9 digits, no symbols/spaces
+    const phoneDigits = /^\d{9}$/;
+    if (!v.phone.trim()) {
+      errors.phone = "Required";
+    } else if (!phoneDigits.test(v.phone.trim())) {
+      errors.phone = "ჩაწერეთ ზუსტად 9 ნიშნა ნომერი";
+    }
+
+    return errors;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const nextErrors = validateFields(values);
+    setFieldErrors(nextErrors);
+
+    if (nextErrors.firstName || nextErrors.lastName || nextErrors.phone) {
+      setErrorMessage("გთხოვთ შეასწოროთ გაწითლებული ველი");
+      setStatus("error");
+      return;
+    }
 
     if (!values.privacyConsent) {
       setErrorMessage("Please agree to the placeholder consent text.");
@@ -130,6 +188,10 @@ export default function ApplicationForm({
     }
   };
 
+  // Helper: color for placeholder vs selected options
+  const selectColor = (hasValue: boolean) =>
+    hasValue ? "#004E1B" : "rgba(0, 0, 0, 0.24)";
+
   return (
     <form
       className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-[26px] bg-white/70 px-10 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur"
@@ -152,13 +214,20 @@ export default function ApplicationForm({
           name="firstName"
           autoComplete="given-name"
           placeholder="ჩაწერე სახელი"
-          className={`${inputBaseStyles} text-[#202020]`}
+          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.firstName ? "outline outline-2 outline-red-500" : ""}`}
           value={values.firstName}
           onChange={(event) =>
             handleFieldChange("firstName", event.currentTarget.value)
           }
           required
+          aria-invalid={!!fieldErrors.firstName}
+          aria-errormessage={fieldErrors.firstName ? "firstName-error" : undefined}
         />
+        {fieldErrors.firstName && (
+          <span id="firstName-error" className="pl-1 text-xs text-red-600">
+            {fieldErrors.firstName}
+          </span>
+        )}
       </label>
 
       <label
@@ -172,13 +241,20 @@ export default function ApplicationForm({
           name="lastName"
           autoComplete="family-name"
           placeholder="ჩაწერე გვარი"
-          className={`${inputBaseStyles} text-[#202020]`}
+          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.lastName ? "outline outline-2 outline-red-500" : ""}`}
           value={values.lastName}
           onChange={(event) =>
             handleFieldChange("lastName", event.currentTarget.value)
           }
           required
+          aria-invalid={!!fieldErrors.lastName}
+          aria-errormessage={fieldErrors.lastName ? "lastName-error" : undefined}
         />
+        {fieldErrors.lastName && (
+          <span id="lastName-error" className="pl-1 text-xs text-red-600">
+            {fieldErrors.lastName}
+          </span>
+        )}
       </label>
 
       <label
@@ -191,14 +267,23 @@ export default function ApplicationForm({
           type="tel"
           name="phone"
           autoComplete="tel"
-          placeholder="ჩაწერე ნომერი"
-          className={`${inputBaseStyles} text-[#202020]`}
+          placeholder="ჩაწერე 9 ციფრი (მაგ. 5XXXXXXXX)"
+          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.phone ? "outline outline-2 outline-red-500" : ""}`}
           value={values.phone}
           onChange={(event) =>
             handleFieldChange("phone", event.currentTarget.value)
           }
           required
+          inputMode="numeric"
+          pattern="\d{9}"
+          aria-invalid={!!fieldErrors.phone}
+          aria-errormessage={fieldErrors.phone ? "phone-error" : undefined}
         />
+        {fieldErrors.phone && (
+          <span id="phone-error" className="pl-1 text-xs text-red-600">
+            {fieldErrors.phone}
+          </span>
+        )}
       </label>
 
       <label
@@ -345,6 +430,3 @@ export default function ApplicationForm({
     </form>
   );
 }
-
-
-
