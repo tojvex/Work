@@ -41,8 +41,8 @@ export default function IntroDoor() {
   }
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black">
-      <div className="relative aspect-video w-full max-w-screen-xl overflow-hidden">
+    <div className="fixed inset-0 z-999 flex items-center justify-center bg-black">
+      <div className="relative aspect-video w-full max-w-7xl overflow-hidden">
         <div className="absolute inset-0 flex">
           <button
             type="button"

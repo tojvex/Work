@@ -117,7 +117,7 @@ export default function CardModal({ card, onClose }: CardModalProps) {
         />
         <button
           type="button"
-          className="absolute bottom-3 left-1/2 w-[60%] -translate-x-1/2 cursor-pointer rounded-2xl bg-[#1DA94A] py-4 text-base font-semibold text-white shadow transition hover:bg-[#17853a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="absolute bottom-2.5 left-1/2 w-[60%] -translate-x-1/2 cursor-pointer rounded-2xl bg-[#1DA94A] py-4 text-base font-semibold text-white shadow transition hover:bg-[#17853a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           onClick={handleApplyClick}
         >
           არჩევა
