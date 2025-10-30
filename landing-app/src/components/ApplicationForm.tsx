@@ -132,7 +132,7 @@ export default function ApplicationForm({
 
   return (
     <form
-      className="mx-auto flex w-full max-w-[448px] flex-col gap-4 rounded-[26px] bg-white/70 px-10 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur"
+      className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-[26px] bg-white/70 px-10 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur"
       onSubmit={handleSubmit}
     >
       <div className="mb-2 text-center">
@@ -312,7 +312,7 @@ export default function ApplicationForm({
       <label className="flex items-center gap-3 text-xs">
         <input
           type="checkbox"
-          className="h-5 w-5 shrink-0 rounded border border-[#9b9b9b] bg-white accent-[#1DA94A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1DA94A]"
+          className="h-5 w-5 shrink-0 rounded border border-[#9b9b9b] bg-white accent-[#1DA94A] focus-visible:outline-2 focus-visible:outline-[#1DA94A]"
           checked={values.privacyConsent}
           onChange={(event) =>
             handleFieldChange("privacyConsent", event.currentTarget.checked)

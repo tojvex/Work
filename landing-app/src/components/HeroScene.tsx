@@ -44,7 +44,7 @@ export default function HeroScene({
             : { background: "#dedddd" }
         }
       >
-        <div className="relative aspect-[1365/640] w-full">
+        <div className="relative aspect-1365/640 w-full">
           {items.map((item) => {
             const baseImage = isDarkTheme && item.darkSrc ? item.darkSrc : item.lightSrc;
             const hoverImage =
@@ -94,7 +94,7 @@ export default function HeroScene({
 
       {/* Mobile scene */}
       <div
-        className="relative mt-0 w-full aspect-[9/16] lg:hidden"
+        className="relative mt-0 w-full aspect-9/16 lg:hidden"
         style={
           isDarkTheme
             ? { background: "linear-gradient(180deg, #363264 0%, #201C49 100%)" }
