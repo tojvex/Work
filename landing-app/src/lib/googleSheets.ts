@@ -62,6 +62,17 @@ export const appendApplicationRow = async (
   const sheets = await getSheetsClient();
   const spreadsheetId = getSpreadsheetId();
   const range = getWorksheetRange();
+  const timeZone = process.env.APPLICATION_TIME_ZONE ?? "Asia/Tbilisi";
+  const timestamp = new Date().toLocaleString("sv-SE", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
@@ -71,7 +82,7 @@ export const appendApplicationRow = async (
     requestBody: {
       values: [
         [
-          new Date().toISOString(),
+          timestamp,
           submission.firstName,
           submission.lastName,
           submission.phone,
