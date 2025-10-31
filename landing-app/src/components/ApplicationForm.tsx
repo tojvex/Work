@@ -270,12 +270,16 @@ export default function ApplicationForm({
           placeholder="ჩაწერე 9 ციფრი (მაგ. 5XXXXXXXX)"
           className={`${inputBaseStyles} text-[#202020] ${fieldErrors.phone ? "outline outline-2 outline-red-500" : ""}`}
           value={values.phone}
-          onChange={(event) =>
-            handleFieldChange("phone", event.currentTarget.value)
-          }
+          onChange={(event) => {
+            const digitsOnly = event.currentTarget.value
+              .replace(/\D/g, "")
+              .slice(0, 9);
+            handleFieldChange("phone", digitsOnly);
+          }}
           required
           inputMode="numeric"
           pattern="\d{9}"
+          maxLength={9}
           aria-invalid={!!fieldErrors.phone}
           aria-errormessage={fieldErrors.phone ? "phone-error" : undefined}
         />
