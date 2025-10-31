@@ -72,8 +72,11 @@ export default function HeroScene({
       {/* Mobile headline */}
       <div className="px-4 pt-5 pb-3 lg:hidden">
         <h1
-          className="mx-auto max-w-[18ch] text-center text-2xl font-normal leading-snug tracking-wide text-[#006D0D] sm:max-w-[22ch] sm:text-3xl md:text-4xl"
-          style={{ fontFamily: "DejaVu Sans" }}
+          className="mx-auto max-w-[18ch] text-center text-2xl font-normal leading-snug tracking-wide sm:max-w-[22ch] sm:text-3xl md:text-4xl"
+          style={{
+            fontFamily: "DejaVu Sans",
+            color: isDarkTheme ? "#FFFFFF" : "#006D0D",
+          }}
         >
           {headline}
         </h1>

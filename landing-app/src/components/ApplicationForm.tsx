@@ -214,7 +214,7 @@ export default function ApplicationForm({
           name="firstName"
           autoComplete="given-name"
           placeholder="ჩაწერე სახელი"
-          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.firstName ? "outline outline-2 outline-red-500" : ""}`}
+          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.firstName ? "outline outline-red-500" : ""}`}
           value={values.firstName}
           onChange={(event) =>
             handleFieldChange("firstName", event.currentTarget.value)
@@ -241,7 +241,7 @@ export default function ApplicationForm({
           name="lastName"
           autoComplete="family-name"
           placeholder="ჩაწერე გვარი"
-          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.lastName ? "outline outline-2 outline-red-500" : ""}`}
+          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.lastName ? "outline outline-red-500" : ""}`}
           value={values.lastName}
           onChange={(event) =>
             handleFieldChange("lastName", event.currentTarget.value)
@@ -268,7 +268,7 @@ export default function ApplicationForm({
           name="phone"
           autoComplete="tel"
           placeholder="ჩაწერე 9 ციფრი (მაგ. 5XXXXXXXX)"
-          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.phone ? "outline outline-2 outline-red-500" : ""}`}
+          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.phone ? "outline outline-red-500" : ""}`}
           value={values.phone}
           onChange={(event) => {
             const digitsOnly = event.currentTarget.value

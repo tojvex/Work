@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import ApplicationForm from "@/components/ApplicationForm";
 import HeroHeader from "@/components/HeroHeader";
 import { getApplicationOptions } from "@/data/applicationOptions";
+import { HEADLINE } from "@/data/heroItems";
 
 export default function ApplicationPage() {
   return (
@@ -31,10 +32,21 @@ function ApplicationPageContent() {
   return (
     <div className="flex min-h-screen flex-col" style={backgroundStyle}>
       <HeroHeader
-        headline=""
+        headline={HEADLINE}
         isDarkTheme={isDarkTheme}
         onToggleTheme={() => setTheme(isDarkTheme ? "light" : "dark")}
       />
+      <div className="px-4 pt-5 pb-3 lg:hidden">
+        <h1
+          className="mx-auto max-w-[18ch] text-center text-2xl font-normal leading-snug tracking-wide sm:max-w-[22ch] sm:text-3xl md:text-4xl"
+          style={{
+            fontFamily: "DejaVu Sans",
+            color: isDarkTheme ? "#FFFFFF" : "#006D0D",
+          }}
+        >
+          {HEADLINE}
+        </h1>
+      </div>
 
       <main className="flex flex-1 justify-center px-4 py-12">
         <div className="relative z-10 flex w-full max-w-xl flex-col items-center gap-6">
