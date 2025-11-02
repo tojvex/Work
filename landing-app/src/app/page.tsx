@@ -6,6 +6,7 @@ import CardModal from "@/components/CardModal";
 import HeroHeader from "@/components/HeroHeader";
 import HeroScene from "@/components/HeroScene";
 import IntroDoor from "@/components/IntroDoor";
+import { useTheme } from "@/components/ThemeProvider";
 import {
   HEADLINE,
   heroItems,
@@ -14,10 +15,8 @@ import {
 } from "@/data/heroItems";
 
 export default function Home() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { isDarkTheme, toggleTheme } = useTheme();
   const [selectedCard, setSelectedCard] = useState<HeroItemWithCard | null>(null);
-
-  const isDarkTheme = theme === "dark";
 
   const handleHeroSelection = (item: HeroItem) => {
     if (!item.card) {
@@ -37,7 +36,7 @@ export default function Home() {
       <HeroHeader
         headline={HEADLINE}
         isDarkTheme={isDarkTheme}
-        onToggleTheme={() => setTheme(isDarkTheme ? "light" : "dark")}
+        onToggleTheme={toggleTheme}
       />
 
       <main

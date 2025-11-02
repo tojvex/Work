@@ -1,10 +1,11 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import ApplicationForm from "@/components/ApplicationForm";
 import HeroHeader from "@/components/HeroHeader";
+import { useTheme } from "@/components/ThemeProvider";
 import { getApplicationOptions } from "@/data/applicationOptions";
 import { HEADLINE } from "@/data/heroItems";
 
@@ -17,8 +18,7 @@ export default function ApplicationPage() {
 }
 
 function ApplicationPageContent() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const isDarkTheme = theme === "dark";
+  const { isDarkTheme, toggleTheme } = useTheme();
 
   const searchParams = useSearchParams();
   const cardId = searchParams.get("card");
@@ -34,7 +34,7 @@ function ApplicationPageContent() {
       <HeroHeader
         headline={HEADLINE}
         isDarkTheme={isDarkTheme}
-        onToggleTheme={() => setTheme(isDarkTheme ? "light" : "dark")}
+        onToggleTheme={toggleTheme}
       />
       <div className="px-4 pt-5 pb-3 lg:hidden">
         <h1

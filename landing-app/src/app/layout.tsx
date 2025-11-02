@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const firaGo = localFont({
   src: "../../public/fonts/Firago/FiraGO_OTF_1001/Roman/FiraGO-ExtraBold.otf",
@@ -21,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${firaGo.variable} antialiased`}>{children}</body>
+      <body className={`${firaGo.variable} antialiased`}>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }
