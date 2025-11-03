@@ -2,10 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import localFont from "next/font/local";
 
 import Logo from "@/media/Logo.png";
 import DayModeToggle from "@/media/WhiteModeLogo.png";
 import NightModeToggle from "@/media/DarkModeLogo.png";
+
+const dejaVuSans = localFont({
+  src: "../../public/fonts/DejavuSans/dejavu-sans-extra-light.ttf",
+  weight: "200",
+  display: "swap",
+});
 
 type HeroHeaderProps = {
   headline: string;
@@ -54,8 +61,7 @@ export default function HeroHeader({
           />
         </Link>
         <h1
-          className="max-w-152 text-center text-3xl font-normal tracking-wide text-white"
-          style={{ fontFamily: "DejaVu Sans" }}
+          className={`max-w-152 text-center text-3xl font-extralight uppercase tracking-wide text-white ${dejaVuSans.className}`}
         >
           {headline}
         </h1>
