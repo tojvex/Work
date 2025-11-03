@@ -57,7 +57,7 @@ export default function HeroHeader({
           />
         </Link>
         <h1
-          className="max-w-152 text-center text-3xl font-light tracking-wide text-white"
+          className="max-w-152 text-center text-3xl font-normal tracking-wide text-white"
           style={{ fontFamily: "var(--font-noto-sans-georgian)" }}
           data-original-headline={headline}
           data-mtavruli-headline={upperHeadline}
