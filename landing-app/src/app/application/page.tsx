@@ -8,6 +8,7 @@ import HeroHeader from "@/components/HeroHeader";
 import { useTheme } from "@/components/ThemeProvider";
 import { getApplicationOptions } from "@/data/applicationOptions";
 import { HEADLINE } from "@/data/heroItems";
+import { toMtavruli } from "@/utils/georgian";
 
 export default function ApplicationPage() {
   return (
@@ -25,6 +26,8 @@ function ApplicationPageContent() {
   const { positionOptions, scheduleOptions, locationOptions } =
     getApplicationOptions(cardId);
 
+  const mtavruliHeadline = toMtavruli(HEADLINE);
+
   const backgroundStyle = isDarkTheme
     ? { background: "linear-gradient(180deg, #363264 0%, #201C49 100%)" }
     : { background: "#dedddd" };
@@ -40,11 +43,13 @@ function ApplicationPageContent() {
         <h1
           className="mx-auto max-w-[18ch] text-center text-2xl font-normal leading-snug tracking-wide sm:max-w-[22ch] sm:text-3xl md:text-4xl"
           style={{
-            fontFamily: "DejaVu Sans",
+            fontFamily: "var(--font-noto-sans-georgian)",
             color: isDarkTheme ? "#FFFFFF" : "#006D0D",
           }}
+          data-original-headline={HEADLINE}
+          data-mtavruli-headline={mtavruliHeadline}
         >
-          {HEADLINE}
+          {mtavruliHeadline}
         </h1>
       </div>
 

@@ -59,7 +59,7 @@ import DeliveryCard from "@/media/DeliveryCard.png";
 import WarehouseCard from "@/media/WarehouseCard.png";
 
 export const HEADLINE =
-  "იპოვე შენი ადგილი აგროჰაბში";
+  "იპოვე შენი სივრცე აგროჰაბში"
 
 export type HeroCardDetails = {
   image: StaticImageData;

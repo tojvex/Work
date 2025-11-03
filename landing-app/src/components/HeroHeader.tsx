@@ -2,17 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import localFont from "next/font/local";
 
 import Logo from "@/media/Logo.png";
 import DayModeToggle from "@/media/WhiteModeLogo.png";
 import NightModeToggle from "@/media/DarkModeLogo.png";
-
-const dejaVuSans = localFont({
-  src: "../../public/fonts/DejavuSans/dejavu-sans-extra-light.ttf",
-  weight: "200",
-  display: "swap",
-});
+import { toMtavruli } from "@/utils/georgian";
 
 type HeroHeaderProps = {
   headline: string;
@@ -25,6 +19,8 @@ export default function HeroHeader({
   isDarkTheme,
   onToggleTheme,
 }: HeroHeaderProps) {
+  const upperHeadline = toMtavruli(headline);
+
   return (
     <header className="bg-[#1DA94A] text-white shadow-[0_6px_18px_rgba(0,0,0,0.1)]">
       <div className="flex items-center justify-between px-4 py-4 lg:hidden">
@@ -61,9 +57,12 @@ export default function HeroHeader({
           />
         </Link>
         <h1
-          className={`max-w-152 text-center text-3xl font-extralight uppercase tracking-wide text-white ${dejaVuSans.className}`}
+          className="max-w-152 text-center text-3xl font-light tracking-wide text-white"
+          style={{ fontFamily: "var(--font-noto-sans-georgian)" }}
+          data-original-headline={headline}
+          data-mtavruli-headline={upperHeadline}
         >
-          {headline}
+          {upperHeadline}
         </h1>
         <button
           type="button"

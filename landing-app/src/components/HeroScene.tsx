@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import type { HeroItem } from "@/data/heroItems";
+import { toMtavruli } from "@/utils/georgian";
 
 type HeroSceneProps = {
   headline: string;
@@ -24,6 +25,7 @@ export default function HeroScene({
   activeCardId,
   onSelectItem,
 }: HeroSceneProps) {
+  const mtavruliHeadline = toMtavruli(headline);
   useEffect(() => {
     if (typeof window === "undefined") {
       return undefined;
@@ -74,11 +76,13 @@ export default function HeroScene({
         <h1
           className="mx-auto max-w-[18ch] text-center text-2xl font-normal leading-snug tracking-wide sm:max-w-[22ch] sm:text-3xl md:text-4xl"
           style={{
-            fontFamily: "DejaVu Sans",
+            fontFamily: "var(--font-noto-sans-georgian)",
             color: isDarkTheme ? "#FFFFFF" : "#006D0D",
           }}
+          data-original-headline={headline}
+          data-mtavruli-headline={mtavruliHeadline}
         >
-          {headline}
+          {mtavruliHeadline}
         </h1>
       </div>
 
