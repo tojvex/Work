@@ -111,7 +111,13 @@ export default function CardModal({ card, isDarkTheme, onClose }: CardModalProps
         className="relative w-[min(338px,90vw)] outline-none"
         onClick={(event) => event.stopPropagation()}
       >
-        <Image src={cardImage} alt={renderedCard.card.heading} className="h-auto w-full" priority />
+        <Image
+          src={cardImage}
+          alt={renderedCard.card.heading}
+          className="h-auto w-full"
+          priority
+          placeholder="blur"
+        />
         <button
           type="button"
           onClick={onClose}
