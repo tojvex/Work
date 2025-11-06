@@ -21,9 +21,15 @@ const getSpreadsheetId = () => {
   return spreadsheetId;
 };
 
-const getWorksheetRange = () => {
-  const worksheet = process.env.GOOGLE_SPREADSHEET_RANGE ?? "Sheet1!A:G";
-  return worksheet;
+const getWorksheetRange = (worksheet?: string) => {
+  const defaultRange = process.env.GOOGLE_SPREADSHEET_RANGE ?? "Sheet1!A:G";
+
+  if (!worksheet) {
+    return defaultRange;
+  }
+
+  const [, columnRange = "A:G"] = defaultRange.split("!");
+  return `${worksheet}!${columnRange}`;
 };
 
 const getSheetsClient = async () => {
@@ -58,10 +64,11 @@ const getSheetsClient = async () => {
 
 export const appendApplicationRow = async (
   submission: ApplicationSubmission,
+  worksheet?: string,
 ) => {
   const sheets = await getSheetsClient();
   const spreadsheetId = getSpreadsheetId();
-  const range = getWorksheetRange();
+  const range = getWorksheetRange(worksheet);
   const timeZone = process.env.APPLICATION_TIME_ZONE ?? "Asia/Tbilisi";
   const timestamp = new Date().toLocaleString("sv-SE", {
     timeZone,

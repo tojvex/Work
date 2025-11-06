@@ -8,10 +8,11 @@ import type { HeroItemWithCard } from "@/data/heroItems";
 
 type CardModalProps = {
   card: HeroItemWithCard | null;
+  isDarkTheme: boolean;
   onClose: () => void;
 };
 
-export default function CardModal({ card, onClose }: CardModalProps) {
+export default function CardModal({ card, isDarkTheme, onClose }: CardModalProps) {
   const [renderedCard, setRenderedCard] = useState<HeroItemWithCard | null>(null);
   const pendingCardRef = useRef<HeroItemWithCard | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -36,8 +37,10 @@ export default function CardModal({ card, onClose }: CardModalProps) {
     }
 
     pendingCardRef.current = card;
+    const targetImage =
+      isDarkTheme && card.card.darkImage ? card.card.darkImage : card.card.image;
     const image = new window.Image();
-    image.src = card.card.image.src;
+    image.src = targetImage.src;
 
     const resolve = () => {
       if (!cancelled && pendingCardRef.current?.id === card.id) {
@@ -58,7 +61,7 @@ export default function CardModal({ card, onClose }: CardModalProps) {
       image.removeEventListener("load", resolve);
       image.removeEventListener("error", resolve);
     };
-  }, [card]);
+  }, [card, isDarkTheme]);
 
   useEffect(() => {
     if (!renderedCard) {
@@ -89,6 +92,11 @@ export default function CardModal({ card, onClose }: CardModalProps) {
     router.push(target);
   };
 
+  const cardImage =
+    isDarkTheme && renderedCard.card.darkImage
+      ? renderedCard.card.darkImage
+      : renderedCard.card.image;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
@@ -103,12 +111,7 @@ export default function CardModal({ card, onClose }: CardModalProps) {
         className="relative w-[min(338px,90vw)] outline-none"
         onClick={(event) => event.stopPropagation()}
       >
-        <Image
-          src={renderedCard.card.image}
-          alt={renderedCard.card.heading}
-          className="h-auto w-full"
-          priority
-        />
+        <Image src={cardImage} alt={renderedCard.card.heading} className="h-auto w-full" priority />
         <button
           type="button"
           onClick={onClose}

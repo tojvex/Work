@@ -40,6 +40,7 @@ export default function HeroScene({
         item.mobileDarkSrc,
         item.mobileHoverDarkSrc,
         item.card?.image,
+        item.card?.darkImage,
       ].forEach((asset) => {
         if (!asset) {
           return;

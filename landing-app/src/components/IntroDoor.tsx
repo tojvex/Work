@@ -51,7 +51,7 @@ export default function IntroDoor() {
             aria-label="Open the door"
           >
             <Image
-              src="/intro-door-left.png"
+              src="/intro-door-left-v2.png"
               alt="Left door"
               fill
               priority
@@ -69,7 +69,7 @@ export default function IntroDoor() {
             aria-label="Open the door"
           >
             <Image
-              src="/intro-door-right.png"
+              src="/intro-door-right-v2.png"
               alt="Right door"
               fill
               priority
@@ -85,4 +85,3 @@ export default function IntroDoor() {
     </div>
   );
 }
-

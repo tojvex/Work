@@ -56,7 +56,7 @@ export default function Home() {
         />
       </main>
 
-      <CardModal card={selectedCard} onClose={handleCloseModal} />
+      <CardModal card={selectedCard} isDarkTheme={isDarkTheme} onClose={handleCloseModal} />
     </div>
   );
 }
