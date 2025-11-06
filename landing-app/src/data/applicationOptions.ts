@@ -4,6 +4,15 @@ export type ApplicationOptionSet = {
   locationOptions: string[];
 };
 
+export const streetOptionsByCity: Record<string, string[]> = {
+  "თბილისი": [
+    "ვაჟა-ფშაველას გამზირი",
+    "ყაზბეგის გამზირი",
+    "რუსთაველის გამზირი",
+    "მარჯანიშვილის ქუჩა",
+  ],
+};
+
 const sharedScheduleOptions = [
   "არ მაქვს",
   "მაქვს, 1 წლამდე",

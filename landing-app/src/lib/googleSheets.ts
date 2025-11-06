@@ -7,6 +7,7 @@ export type ApplicationSubmission = {
   preferredPosition: string;
   preferredSchedule: string;
   preferredLocation: string;
+  preferredStreet?: string;
 };
 
 const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
@@ -81,6 +82,10 @@ export const appendApplicationRow = async (
     hour12: false,
   });
 
+  const locationValue = submission.preferredStreet
+    ? `${submission.preferredLocation} - ${submission.preferredStreet}`
+    : submission.preferredLocation;
+
   await sheets.spreadsheets.values.append({
     spreadsheetId,
     range,
@@ -95,7 +100,7 @@ export const appendApplicationRow = async (
           submission.phone,
           submission.preferredPosition,
           submission.preferredSchedule,
-          submission.preferredLocation,
+          locationValue,
         ],
       ],
     },

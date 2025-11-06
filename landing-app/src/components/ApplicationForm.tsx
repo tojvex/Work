@@ -1,6 +1,8 @@
 ﻿"use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+
+import { streetOptionsByCity } from "@/data/applicationOptions";
 
 type ApplicationFormValues = {
   firstName: string;
@@ -9,6 +11,7 @@ type ApplicationFormValues = {
   preferredPosition: string;
   preferredSchedule: string;
   preferredLocation: string;
+  preferredStreet: string;
   privacyConsent: boolean;
 };
 
@@ -30,6 +33,7 @@ const initialValues: ApplicationFormValues = {
   preferredPosition: "",
   preferredSchedule: "",
   preferredLocation: "",
+  preferredStreet: "",
   privacyConsent: false,
 };
 
@@ -76,6 +80,12 @@ export default function ApplicationForm({
       if (next.preferredLocation && !locationOptions.includes(next.preferredLocation)) {
         next.preferredLocation = "";
       }
+      const streetsForCity = streetOptionsByCity[next.preferredLocation] ?? [];
+      if (streetsForCity.length === 0) {
+        next.preferredStreet = "";
+      } else if (next.preferredStreet && !streetsForCity.includes(next.preferredStreet)) {
+        next.preferredStreet = "";
+      }
       return next;
     });
   }, [positionOptions, scheduleOptions, locationOptions]);
@@ -84,10 +94,20 @@ export default function ApplicationForm({
     field: keyof ApplicationFormValues,
     value: string | boolean,
   ) => {
-    setValues((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setValues((prev) => {
+      if (field === "preferredLocation") {
+        return {
+          ...prev,
+          preferredLocation: value as string,
+          preferredStreet: "",
+        };
+      }
+
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
 
     // Clear the error for this field as user edits
     if (field === "firstName" || field === "lastName" || field === "phone") {
@@ -159,6 +179,7 @@ export default function ApplicationForm({
         preferredPosition: values.preferredPosition,
         preferredSchedule: values.preferredSchedule,
         preferredLocation: values.preferredLocation,
+        preferredStreet: values.preferredStreet.trim(),
       };
 
       const response = await fetch("/api/application", {
@@ -191,6 +212,11 @@ export default function ApplicationForm({
   // Helper: color for placeholder vs selected options
   const selectColor = (hasValue: boolean) =>
     hasValue ? "#004E1B" : "rgba(0, 0, 0, 0.24)";
+
+  const availableStreetOptions = useMemo(
+    () => streetOptionsByCity[values.preferredLocation] ?? [],
+    [values.preferredLocation],
+  );
 
   return (
     <form
@@ -397,6 +423,42 @@ export default function ApplicationForm({
           </span>
         </div>
       </label>
+
+      {availableStreetOptions.length > 0 ? (
+        <label
+          htmlFor="application-street"
+          className={`${fieldGroupStyles} text-sm`}
+        >
+          <span className={fieldTitleClasses} style={fieldTitleStyle}>ქუჩა</span>
+          <div className="relative">
+            <select
+              id="application-street"
+              name="preferredStreet"
+              className={`${inputBaseStyles} appearance-none pr-12`}
+              style={{
+                color: selectColor(Boolean(values.preferredStreet)),
+              }}
+              value={values.preferredStreet}
+              onChange={(event) =>
+                handleFieldChange("preferredStreet", event.currentTarget.value)
+              }
+              required
+            >
+              <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
+                აირჩიე ქუჩა
+              </option>
+              {availableStreetOptions.map((option) => (
+                <option key={option} value={option} style={{ color: "#004E1B" }}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <span className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-lg text-[#5c5c5c]">
+              v
+            </span>
+          </div>
+        </label>
+      ) : null}
 
       <label className="flex items-center gap-3 text-xs">
         <input
