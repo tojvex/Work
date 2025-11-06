@@ -429,7 +429,7 @@ export default function ApplicationForm({
           htmlFor="application-street"
           className={`${fieldGroupStyles} text-sm`}
         >
-          <span className={fieldTitleClasses} style={fieldTitleStyle}>ქუჩა</span>
+          <span className={fieldTitleClasses} style={fieldTitleStyle}>ფილიალი</span>
           <div className="relative">
             <select
               id="application-street"
@@ -445,7 +445,7 @@ export default function ApplicationForm({
               required
             >
               <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
-                აირჩიე ქუჩა
+                აირჩიე ფილიალი
               </option>
               {availableStreetOptions.map((option) => (
                 <option key={option} value={option} style={{ color: "#004E1B" }}>
