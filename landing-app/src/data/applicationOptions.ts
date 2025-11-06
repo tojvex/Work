@@ -85,7 +85,8 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   delivery: {
     positionOptions: [
-      "მიტანის სერვისის კონსულტანტი",
+      "მიტანის სერვისის კონსულტანტი(ფიქერი)",
+      "ღამის მიტანის სერვისის კონსულტანტი(ფიქერი)",
 
     ],
     scheduleOptions: sharedScheduleOptions,

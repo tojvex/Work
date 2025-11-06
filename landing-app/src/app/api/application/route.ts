@@ -6,34 +6,31 @@ import {
 } from "@/lib/googleSheets";
 import { applicationOptionsByCard } from "@/data/applicationOptions";
 
-const CARD_KEY_TO_WORKSHEET: Record<string, string> = {
-  security: "Security",
-  service: "Service",
-  kitchen: "Kitchen",
-  delivery: "Delivery",
-  warehouse: "Warehouse",
-  cashier: "Cashier",
-  butchery: "Butchery",
-  baker: "Bakery",
-};
+const normalizePosition = (value: string) => value.trim();
 
 const POSITION_TO_WORKSHEET = new Map<string, string>(
   Object.entries(applicationOptionsByCard)
-    .filter(([key]) => key in CARD_KEY_TO_WORKSHEET)
-    .flatMap(([key, optionSet]) => {
-      const worksheet = CARD_KEY_TO_WORKSHEET[key];
-      return optionSet.positionOptions.map((position) => [position, worksheet] as const);
-    }),
+    .filter(([key]) => key !== "default")
+    .flatMap(([, optionSet]) =>
+      optionSet.positionOptions.map((position) => {
+        const normalized = normalizePosition(position);
+        return [normalized, normalized] as const;
+      }),
+    ),
 );
 
 const resolveWorksheetForSubmission = (
   submission: ApplicationSubmission,
 ): string | undefined => {
   if (submission.preferredPosition) {
-    const worksheet = POSITION_TO_WORKSHEET.get(submission.preferredPosition);
-    if (worksheet) {
-      return worksheet;
+    const normalizedPosition = normalizePosition(submission.preferredPosition);
+
+    if (!normalizedPosition) {
+      return undefined;
     }
+
+    const worksheet = POSITION_TO_WORKSHEET.get(normalizedPosition);
+    return worksheet ?? normalizedPosition;
   }
 
   return undefined;
