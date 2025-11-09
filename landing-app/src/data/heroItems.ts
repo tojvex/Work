@@ -56,6 +56,7 @@ import ButcheryCard from "@/media/ButcheryCard.png";
 import CashierCard from "@/media/CashierCard.png";
 import CashierCardDark from "@/media/CashierCardDark.png";
 import ServiceCard from "@/media/ServiceCard.png";
+import ServiceCardDark from "@/media/ServiceCardDark.png";
 import DeliveryCard from "@/media/DeliveryCard.png";
 import DeliveryCardDark from "@/media/DeliveryCardDark.png";
 import WarehouseCard from "@/media/WarehouseCard.png";
@@ -215,6 +216,7 @@ export const heroItems: HeroItem[] = [
     mobileClass: "left-[28%] top-[28%] w-[55%]",
     card: {
       image: ServiceCard,
+      darkImage: ServiceCardDark,
       heading: "\u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8",
       points: [
         "\u10d9\u10dd\u10dc\u10e1\u10e3\u10da\u10e2\u10d0\u10dc\u10e2\u10d8",
