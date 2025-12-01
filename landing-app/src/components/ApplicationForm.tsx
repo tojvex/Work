@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
@@ -11,7 +11,7 @@ type ApplicationFormValues = {
   preferredPosition: string;
   preferredSchedule: string;
   preferredLocation: string;
-  preferredStreet: string;
+  preferredStreets: string[];
   privacyConsent: boolean;
 };
 
@@ -24,6 +24,7 @@ type FieldErrors = {
   firstName: string | null;
   lastName: string | null;
   phone: string | null;
+  preferredStreet: string | null;
 };
 
 const initialValues: ApplicationFormValues = {
@@ -33,7 +34,7 @@ const initialValues: ApplicationFormValues = {
   preferredPosition: "",
   preferredSchedule: "",
   preferredLocation: "",
-  preferredStreet: "",
+  preferredStreets: [],
   privacyConsent: false,
 };
 
@@ -66,6 +67,7 @@ export default function ApplicationForm({
     firstName: null,
     lastName: null,
     phone: null,
+    preferredStreet: null,
   });
 
   useEffect(() => {
@@ -82,9 +84,11 @@ export default function ApplicationForm({
       }
       const streetsForCity = streetOptionsByCity[next.preferredLocation] ?? [];
       if (streetsForCity.length === 0) {
-        next.preferredStreet = "";
-      } else if (next.preferredStreet && !streetsForCity.includes(next.preferredStreet)) {
-        next.preferredStreet = "";
+        next.preferredStreets = [];
+      } else if (next.preferredStreets.length > 0) {
+        next.preferredStreets = next.preferredStreets.filter((street) =>
+          streetsForCity.includes(street),
+        );
       }
       return next;
     });
@@ -99,7 +103,7 @@ export default function ApplicationForm({
         return {
           ...prev,
           preferredLocation: value as string,
-          preferredStreet: "",
+          preferredStreets: [],
         };
       }
 
@@ -113,16 +117,46 @@ export default function ApplicationForm({
     if (field === "firstName" || field === "lastName" || field === "phone") {
       setFieldErrors((prev) => ({ ...prev, [field]: null }));
     }
+
+    if (field === "preferredLocation") {
+      setFieldErrors((prev) => ({ ...prev, preferredStreet: null }));
+    }
+  };
+
+  const toggleStreetSelection = (street: string) => {
+    setValues((prev) => {
+      const alreadySelected = prev.preferredStreets.includes(street);
+      const preferredStreets = alreadySelected
+        ? prev.preferredStreets.filter((item) => item !== street)
+        : [...prev.preferredStreets, street];
+
+      return { ...prev, preferredStreets };
+    });
+
+    setFieldErrors((prev) => ({ ...prev, preferredStreet: null }));
   };
 
   const resetForm = () => {
     setValues(initialValues);
-    setFieldErrors({ firstName: null, lastName: null, phone: null });
+    setFieldErrors({
+      firstName: null,
+      lastName: null,
+      phone: null,
+      preferredStreet: null,
+    });
   };
 
   // NEW: validation helper
-  const validateFields = (v: ApplicationFormValues): FieldErrors => {
-    const errors: FieldErrors = { firstName: null, lastName: null, phone: null };
+  const validateFields = (
+    v: ApplicationFormValues,
+    streets: string[],
+  ): FieldErrors => {
+    const errors: FieldErrors = {
+      firstName: null,
+      lastName: null,
+      phone: null,
+      preferredStreet: null,
+    };
 
     // Only letters (Unicode letters), no spaces/symbols
     const lettersOnly = /^[\p{L}]+$/u;
@@ -130,13 +164,13 @@ export default function ApplicationForm({
     if (!v.firstName.trim()) {
       errors.firstName = "Required";
     } else if (!lettersOnly.test(v.firstName.trim())) {
-      errors.firstName = "ჩაწერეთ მხოლოდ ტექსტი";
+      errors.firstName = "";
     }
 
     if (!v.lastName.trim()) {
       errors.lastName = "Required";
     } else if (!lettersOnly.test(v.lastName.trim())) {
-      errors.lastName = "ჩაწერეთ მხოლოდ ტექსტი";
+      errors.lastName = "??????? ?????? ??????";
     }
 
     // Exactly 9 digits, no symbols/spaces
@@ -147,23 +181,32 @@ export default function ApplicationForm({
       errors.phone = "ჩაწერეთ ზუსტად 9 ნიშნა ნომერი";
     }
 
+    if (streets.length > 0 && v.preferredStreets.length === 0) {
+      errors.preferredStreet = "Required";
+    }
+
     return errors;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nextErrors = validateFields(values);
+    const nextErrors = validateFields(values, availableStreetOptions);
     setFieldErrors(nextErrors);
 
-    if (nextErrors.firstName || nextErrors.lastName || nextErrors.phone) {
+    if (
+      nextErrors.firstName ||
+      nextErrors.lastName ||
+      nextErrors.phone ||
+      nextErrors.preferredStreet
+    ) {
       setErrorMessage("გთხოვთ შეასწოროთ გაწითლებული ველი");
       setStatus("error");
       return;
     }
 
     if (!values.privacyConsent) {
-      setErrorMessage("Please agree to the placeholder consent text.");
+      setErrorMessage("გთხოვთ დათანხმდეთ კონფიდენციალურობის პოლიტიკას");
       setStatus("error");
       return;
     }
@@ -179,7 +222,7 @@ export default function ApplicationForm({
         preferredPosition: values.preferredPosition,
         preferredSchedule: values.preferredSchedule,
         preferredLocation: values.preferredLocation,
-        preferredStreet: values.preferredStreet.trim(),
+        preferredStreets: values.preferredStreets,
       };
 
       const response = await fetch("/api/application", {
@@ -208,10 +251,6 @@ export default function ApplicationForm({
       setStatus("error");
     }
   };
-
-  // Helper: color for placeholder vs selected options
-  const selectColor = (hasValue: boolean) =>
-    hasValue ? "#004E1B" : "rgba(0, 0, 0, 0.24)";
 
   const availableStreetOptions = useMemo(
     () => streetOptionsByCity[values.preferredLocation] ?? [],
@@ -425,39 +464,38 @@ export default function ApplicationForm({
       </label>
 
       {availableStreetOptions.length > 0 ? (
-        <label
-          htmlFor="application-street"
-          className={`${fieldGroupStyles} text-sm`}
-        >
+        <div className={`${fieldGroupStyles} text-sm`}>
           <span className={fieldTitleClasses} style={fieldTitleStyle}>ფილიალი</span>
-          <div className="relative">
-            <select
-              id="application-street"
-              name="preferredStreet"
-              className={`${inputBaseStyles} appearance-none pr-12`}
-              style={{
-                color: selectColor(Boolean(values.preferredStreet)),
-              }}
-              value={values.preferredStreet}
-              onChange={(event) =>
-                handleFieldChange("preferredStreet", event.currentTarget.value)
-              }
-              required
-            >
-              <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
-                აირჩიე ფილიალი
-              </option>
-              {availableStreetOptions.map((option) => (
-                <option key={option} value={option} style={{ color: "#004E1B" }}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <span className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-lg text-[#5c5c5c]">
-              v
-            </span>
+          <span className="pl-1 text-xs text-[#5c5c5c]">Select one or more streets</span>
+          <div className="flex flex-wrap gap-2">
+            {availableStreetOptions.map((option) => {
+              const selected = values.preferredStreets.includes(option);
+              return (
+                <label
+                  key={option}
+                  className={`flex items-center gap-2 rounded-[9px] border px-3 py-2 text-sm transition ${
+                    selected
+                      ? "border-[#1DA94A] bg-[#e4f4e9] shadow-sm"
+                      : "border-[#d7d7d7] bg-[#f1f1f1]"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-[#9b9b9b] text-[#1DA94A] accent-[#1DA94A]"
+                    checked={selected}
+                    onChange={() => toggleStreetSelection(option)}
+                  />
+                  <span className="text-[#202020]">{option}</span>
+                </label>
+              );
+            })}
           </div>
-        </label>
+          {fieldErrors.preferredStreet && (
+            <span className="pl-1 text-xs text-red-600">
+              {fieldErrors.preferredStreet}
+            </span>
+          )}
+        </div>
       ) : null}
 
       <label className="flex items-center gap-3 text-xs">
@@ -481,7 +519,7 @@ export default function ApplicationForm({
 
       {status === "success" ? (
         <p className="text-sm text-[#1DA94A]">
-          თქვენი მონაცემები წარმატებით გადაიგზავნა
+          თქვენი განაცხადი წარმატებით გადაიგზავნა
         </p>
       ) : null}
 
@@ -496,3 +534,4 @@ export default function ApplicationForm({
     </form>
   );
 }
+
