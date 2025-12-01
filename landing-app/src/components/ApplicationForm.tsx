@@ -164,13 +164,13 @@ export default function ApplicationForm({
     if (!v.firstName.trim()) {
       errors.firstName = "Required";
     } else if (!lettersOnly.test(v.firstName.trim())) {
-      errors.firstName = "";
+      errors.firstName = "გთხოვთ ჩაწერეთ სახელი მხოლოდ ასოებით";
     }
 
     if (!v.lastName.trim()) {
       errors.lastName = "Required";
     } else if (!lettersOnly.test(v.lastName.trim())) {
-      errors.lastName = "??????? ?????? ??????";
+      errors.lastName = "გთხოვთ ჩაწერეთ გვარი მხოლოდ ასოებით";
     }
 
     // Exactly 9 digits, no symbols/spaces
