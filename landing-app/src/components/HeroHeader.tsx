@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Logo from "@/media/Logo.png";
-import DayModeToggle from "@/media/WhiteModeLogo.png";
-import NightModeToggle from "@/media/DarkModeLogo.png";
+import Logo from "@/media/Logo.webp";
+import DayModeToggle from "@/media/WhiteModeLogo.webp";
+import NightModeToggle from "@/media/DarkModeLogo.webp";
 import { toMtavruli } from "@/utils/georgian";
 
 type HeroHeaderProps = {
