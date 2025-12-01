@@ -466,7 +466,7 @@ export default function ApplicationForm({
       {availableStreetOptions.length > 0 ? (
         <div className={`${fieldGroupStyles} text-sm`}>
           <span className={fieldTitleClasses} style={fieldTitleStyle}>ფილიალი</span>
-          <span className="pl-1 text-xs text-[#5c5c5c]">Select one or more streets</span>
+          <span className="pl-1 text-xs text-[#5c5c5c]">აირჩიეთ ერთი ან მეტი ფილიალი</span>
           <div className="flex flex-wrap gap-2">
             {availableStreetOptions.map((option) => {
               const selected = values.preferredStreets.includes(option);
