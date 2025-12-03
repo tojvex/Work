@@ -88,14 +88,7 @@ export default function HeroScene({
       </div>
 
       {/* Desktop scene */}
-      <div
-        className="relative hidden w-full lg:block"
-        style={
-          isDarkTheme
-            ? { background: "linear-gradient(180deg, #363264 0%, #201C49 100%)" }
-            : { background: "#dedddd" }
-        }
-      >
+      <div className="relative hidden w-full lg:block">
         <div className="relative aspect-1365/640 w-full">
           {items.map((item) => {
             const baseImage = isDarkTheme && item.darkSrc ? item.darkSrc : item.lightSrc;
@@ -145,14 +138,7 @@ export default function HeroScene({
       </div>
 
       {/* Mobile scene */}
-      <div
-        className="relative mt-0 w-full aspect-9/16 lg:hidden"
-        style={
-          isDarkTheme
-            ? { background: "linear-gradient(180deg, #363264 0%, #201C49 100%)" }
-            : { background: "#dedddd" }
-        }
-      >
+      <div className="relative mt-0 w-full aspect-9/16 lg:hidden">
         {items.map((item) => {
           const mobileBaseImage =
             isDarkTheme && item.mobileDarkSrc ? item.mobileDarkSrc : item.mobileLightSrc;
