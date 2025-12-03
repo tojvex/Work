@@ -306,7 +306,7 @@ export default function ApplicationForm({
       onSubmit={handleSubmit}
     >
       <div className="mb-2 text-center">
-        <p className="text-base font-medium" style={{ color: "rgba(0, 0, 0, 0.38)" }}>
+        <p className="text-sm font-medium" style={{ color: "rgba(0, 0, 0, 0.38)" }}>
           გთხოვთ შეავსოთ ქვემოთ მოცემული ფორმა
         </p>
       </div>
