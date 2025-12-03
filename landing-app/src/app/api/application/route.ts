@@ -6,14 +6,16 @@ import {
 } from "@/lib/googleSheets";
 import { applicationOptionsByCard } from "@/data/applicationOptions";
 
-const normalizePosition = (value: string) => value.trim();
+const normalizePosition = (value: unknown) =>
+  typeof value === "string" ? value.trim() : "";
 
 const POSITION_TO_WORKSHEET = new Map<string, string>(
   Object.entries(applicationOptionsByCard)
     .filter(([key]) => key !== "default")
     .flatMap(([, optionSet]) =>
       optionSet.positionOptions.map((position) => {
-        const normalized = normalizePosition(position);
+        const label = typeof position === "string" ? position : position.label;
+        const normalized = normalizePosition(label);
         return [normalized, normalized] as const;
       }),
     ),
