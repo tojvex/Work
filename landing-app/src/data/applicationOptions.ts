@@ -105,7 +105,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   servicenight: {
     positionOptions: [
-      { label: "ღამის ცვლის კონსულტანტი 1", availableDay: false, availableNight: true },
+      { label: "ღამის ცვლის კონსულტანტი", availableDay: false, availableNight: true },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
@@ -120,7 +120,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   delivery: {
     positionOptions: [
-      { label: "მიტენის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: false },
+      { label: "მიტანის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: false },
 
     ],
     scheduleOptions: sharedScheduleOptions,
@@ -128,7 +128,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   deliverynight: {
     positionOptions: [
-      { label: "ღამის მიტენის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: true },
+      { label: "ღამის მიტანის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: true },
    
     ],
     scheduleOptions: sharedScheduleOptions,
