@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
-import { streetOptionsByCity } from "@/data/applicationOptions";
+import { streetOptionsByCity, type ResolvedPositionOption } from "@/data/applicationOptions";
 
 type ApplicationFormValues = {
   firstName: string;
@@ -24,6 +24,7 @@ type FieldErrors = {
   firstName: string | null;
   lastName: string | null;
   phone: string | null;
+  preferredPosition: string | null;
   preferredStreet: string | null;
 };
 
@@ -46,7 +47,7 @@ const fieldTitleClasses = "pl-1 text-base font-semibold text-[#000000]";
 const fieldTitleStyle: CSSProperties = { fontFamily: "var(--font-firago)" };
 
 type ApplicationFormProps = {
-  positionOptions: string[];
+  positionOptions: ResolvedPositionOption[];
   scheduleOptions: string[];
   locationOptions: string[];
 };
@@ -67,13 +68,19 @@ export default function ApplicationForm({
     firstName: null,
     lastName: null,
     phone: null,
+    preferredPosition: null,
     preferredStreet: null,
   });
 
   useEffect(() => {
     setValues((prev) => {
       const next = { ...prev };
-      if (next.preferredPosition && !positionOptions.includes(next.preferredPosition)) {
+      const hasPreferredPosition =
+        next.preferredPosition &&
+        positionOptions.some(
+          (option) => option.label === next.preferredPosition && option.available,
+        );
+      if (next.preferredPosition && !hasPreferredPosition) {
         next.preferredPosition = "";
       }
       if (next.preferredSchedule && !scheduleOptions.includes(next.preferredSchedule)) {
@@ -114,7 +121,12 @@ export default function ApplicationForm({
     });
 
     // Clear the error for this field as user edits
-    if (field === "firstName" || field === "lastName" || field === "phone") {
+    if (
+      field === "firstName" ||
+      field === "lastName" ||
+      field === "phone" ||
+      field === "preferredPosition"
+    ) {
       setFieldErrors((prev) => ({ ...prev, [field]: null }));
     }
 
@@ -142,6 +154,7 @@ export default function ApplicationForm({
       firstName: null,
       lastName: null,
       phone: null,
+      preferredPosition: null,
       preferredStreet: null,
     });
   };
@@ -150,11 +163,13 @@ export default function ApplicationForm({
   const validateFields = (
     v: ApplicationFormValues,
     streets: string[],
+    positions: ResolvedPositionOption[],
   ): FieldErrors => {
     const errors: FieldErrors = {
       firstName: null,
       lastName: null,
       phone: null,
+      preferredPosition: null,
       preferredStreet: null,
     };
 
@@ -185,20 +200,38 @@ export default function ApplicationForm({
       errors.preferredStreet = "Required";
     }
 
+    if (!v.preferredPosition) {
+      errors.preferredPosition = "Required";
+    } else {
+      const match = positions.find((option) => option.label === v.preferredPosition);
+      if (!match) {
+        errors.preferredPosition = " ں- ں? ں> ںr ں> ں? ںے ں\"  ں> ں? ںo ں? ں¦ ں\" ں> ں\" ں` ں~ ں­  ںs ں? ںo ں~ ں­  ں' ں? ںھ ں~ ں- ںs ں\" ںs ں~";
+      } else if (!match.available) {
+        errors.preferredPosition = " ںz ں? ںs ں~ ں› ں~  ں' ں? ںo ں? ں¦ ںr ں? ں\" ں~ ں­ ں~  ں- ں? ں> ں? ں ں?";
+      }
+    }
+
     return errors;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nextErrors = validateFields(values, availableStreetOptions);
+    if (!hasAvailablePositions) {
+      setErrorMessage("ამ ცვლაში არჩეული მიმართულებით ვაკანსია არ არის.");
+      setStatus("error");
+      return;
+    }
+
+    const nextErrors = validateFields(values, availableStreetOptions, positionOptions);
     setFieldErrors(nextErrors);
 
     if (
       nextErrors.firstName ||
       nextErrors.lastName ||
       nextErrors.phone ||
-      nextErrors.preferredStreet
+      nextErrors.preferredStreet ||
+      nextErrors.preferredPosition
     ) {
       setErrorMessage("გთხოვთ შეასწოროთ გაწითლებული ველი");
       setStatus("error");
@@ -256,6 +289,16 @@ export default function ApplicationForm({
     () => streetOptionsByCity[values.preferredLocation] ?? [],
     [values.preferredLocation],
   );
+
+  const hasAvailablePositions = positionOptions.some((option) => option.available);
+  const selectedPositionOption = positionOptions.find(
+    (option) => option.label === values.preferredPosition,
+  );
+  const positionSelectColor = selectedPositionOption
+    ? selectedPositionOption.available
+      ? "#004E1B"
+      : "#b3261e"
+    : "rgba(0, 0, 0, 0.24)";
 
   return (
     <form
@@ -366,29 +409,52 @@ export default function ApplicationForm({
             name="preferredPosition"
             className={`${inputBaseStyles} appearance-none pr-12`}
             style={{
-              color: values.preferredPosition
-                ? "#004E1B"
-                : "rgba(0, 0, 0, 0.24)",
+              color: positionSelectColor,
             }}
             value={values.preferredPosition}
             onChange={(event) =>
               handleFieldChange("preferredPosition", event.currentTarget.value)
             }
             required
+            disabled={!hasAvailablePositions}
+            aria-invalid={!!fieldErrors.preferredPosition}
+            aria-errormessage={fieldErrors.preferredPosition ? "position-error" : undefined}
           >
             <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
               მიუთითე სასურველი პოზიცია
             </option>
-            {positionOptions.map((option) => (
-              <option key={option} value={option} style={{ color: "#004E1B" }}>
-                {option}
-              </option>
-            ))}
+            {positionOptions.map((option) => {
+              const disabled = !option.available;
+              return (
+                <option
+                  key={option.label}
+                  value={option.label}
+                  disabled={disabled}
+                  style={{
+                    color: disabled ? "#b3261e" : "#004E1B",
+                    textDecoration: disabled ? "line-through" : "none",
+                  }}
+                >
+                  {option.label}
+                  {disabled ? " (დროებით მიუწვდომელი)" : ""}
+                </option>
+              );
+            })}
           </select>
           <span className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-lg text-[#5c5c5c]">
             v
           </span>
         </div>
+        {fieldErrors.preferredPosition && (
+          <span id="position-error" className="pl-1 text-xs text-red-600">
+            {fieldErrors.preferredPosition}
+          </span>
+        )}
+        {!hasAvailablePositions ? (
+          <span className="pl-1 text-xs text-red-600">
+            ამ ცვლაში ამ მიმართულებით ვაკანსია დროებით არ არის.
+          </span>
+        ) : null}
       </label>
 
       <label

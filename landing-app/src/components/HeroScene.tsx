@@ -13,10 +13,8 @@ type HeroSceneProps = {
   onSelectItem: (item: HeroItem) => void;
 };
 
-const DARK_MODE_DISABLED_IDS = new Set(["kitchen", "baker", "butchery", "warehouse"]);
-
-const shouldDisableInDarkMode = (item: HeroItem, isDarkTheme: boolean) =>
-  isDarkTheme && DARK_MODE_DISABLED_IDS.has(item.id);
+const isAvailableInShift = (item: HeroItem, isDarkTheme: boolean) =>
+  isDarkTheme ? item.availableNight : item.availableDay;
 
 export default function HeroScene({
   headline,
@@ -95,8 +93,8 @@ export default function HeroScene({
             const hoverImage =
               isDarkTheme && item.hoverDarkSrc ? item.hoverDarkSrc : item.hoverLightSrc;
 
-            const disabledInDark = shouldDisableInDarkMode(item, isDarkTheme);
-            const canActivate = Boolean(item.card) && !disabledInDark;
+            const availableForShift = isAvailableInShift(item, isDarkTheme);
+            const canActivate = Boolean(item.card) && availableForShift;
             const showHoverSwap = canActivate && Boolean(hoverImage);
 
             // Accessible label only if clickable; otherwise let img alt handle it.
@@ -120,7 +118,7 @@ export default function HeroScene({
                   alt={item.alt}
                   className={`h-auto w-full ${
                     showHoverSwap ? "transition-opacity duration-200 group-hover:opacity-0" : ""
-                  }`}
+                  } ${canActivate ? "" : "opacity-60 grayscale"}`}
                   priority={item.id === "service"}
                 />
                 {showHoverSwap && (
@@ -149,8 +147,8 @@ export default function HeroScene({
               : item.mobileHoverLightSrc ??
                 (isDarkTheme && item.hoverDarkSrc ? item.hoverDarkSrc : item.hoverLightSrc);
 
-          const disabledInDark = shouldDisableInDarkMode(item, isDarkTheme);
-          const canActivate = Boolean(item.card) && !disabledInDark;
+          const availableForShift = isAvailableInShift(item, isDarkTheme);
+          const canActivate = Boolean(item.card) && availableForShift;
           const hasHoverImage = canActivate && Boolean(mobileHoverImage);
           const isActive = activeCardId === item.id;
 
@@ -174,7 +172,9 @@ export default function HeroScene({
                 alt={item.alt}
                 className={`h-auto w-full transition-opacity duration-200 ${
                   isActive ? "opacity-0" : "opacity-100"
-                } ${hasHoverImage ? "group-hover:opacity-0" : ""}`}
+                } ${hasHoverImage ? "group-hover:opacity-0" : ""} ${
+                  canActivate ? "" : "opacity-60 grayscale"
+                }`}
               />
               {hasHoverImage && (
                 <Image

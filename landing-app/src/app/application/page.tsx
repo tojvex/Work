@@ -1,13 +1,18 @@
 "use client";
 
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import ApplicationForm from "@/components/ApplicationForm";
 import HeroHeader from "@/components/HeroHeader";
 import { useTheme } from "@/components/ThemeProvider";
-import { getApplicationOptions } from "@/data/applicationOptions";
-import { HEADLINE } from "@/data/heroItems";
+import {
+  getApplicationOptions,
+  resolveCardShift,
+  type ResolvedCardShift,
+  type Shift,
+} from "@/data/applicationOptions";
+import { HEADLINE, heroItems } from "@/data/heroItems";
 import { toMtavruli } from "@/utils/georgian";
 
 export default function ApplicationPage() {
@@ -20,11 +25,37 @@ export default function ApplicationPage() {
 
 function ApplicationPageContent() {
   const { isDarkTheme, toggleTheme } = useTheme();
+  const router = useRouter();
 
   const searchParams = useSearchParams();
-  const cardId = searchParams.get("card");
-  const { positionOptions, scheduleOptions, locationOptions } =
-    getApplicationOptions(cardId);
+  const rawCardId = searchParams.get("card");
+  const themeShift: Shift = isDarkTheme ? "night" : "day";
+  const resolved: ResolvedCardShift = resolveCardShift(rawCardId, themeShift);
+  const { positionOptions, scheduleOptions, locationOptions } = getApplicationOptions(
+    resolved.cardKey,
+    resolved.shift,
+  );
+
+  const heroItem = resolved.heroId ? heroItems.find((item) => item.id === resolved.heroId) : null;
+  const isRoleAvailable =
+    !resolved.cardKey ||
+    (heroItem
+      ? resolved.shift === "night"
+        ? heroItem.availableNight
+        : heroItem.availableDay
+      : false);
+
+  const SHIFT_LOCKED_IDS = new Set(["cashier", "service", "delivery"]);
+  useEffect(() => {
+    if (!resolved.heroId || !SHIFT_LOCKED_IDS.has(resolved.heroId)) {
+      return;
+    }
+
+    const targetCard = isDarkTheme ? `${resolved.heroId}night` : `${resolved.heroId}day`;
+    if (resolved.cardKey !== targetCard) {
+      router.replace(`/application?card=${encodeURIComponent(targetCard)}`);
+    }
+  }, [isDarkTheme, resolved.cardKey, resolved.heroId, router]);
 
   const mtavruliHeadline = toMtavruli(HEADLINE);
 
@@ -55,11 +86,17 @@ function ApplicationPageContent() {
 
       <main className="flex flex-1 justify-center px-4 py-12">
         <div className="relative z-10 flex w-full max-w-xl flex-col items-center gap-6">
-          <ApplicationForm
-            positionOptions={positionOptions}
-            scheduleOptions={scheduleOptions}
-            locationOptions={locationOptions}
-          />
+          {isRoleAvailable ? (
+            <ApplicationForm
+              positionOptions={positionOptions}
+              scheduleOptions={scheduleOptions}
+              locationOptions={locationOptions}
+            />
+          ) : (
+            <p className="rounded-2xl bg-white/80 px-6 py-4 text-center text-base text-[#222] shadow">
+              ამ პოზიციაზე ამ ცვლაში ვაკანსია დროებით არ არის ხელმისაწვდომი.
+            </p>
+          )}
         </div>
       </main>
     </div>

@@ -86,9 +86,15 @@ export default function CardModal({ card, isDarkTheme, onClose }: CardModalProps
 
   const handleApplyClick = () => {
     onClose();
-    const target = renderedCard.id
-      ? `/application?card=${encodeURIComponent(renderedCard.id)}`
-      : "/application";
+    const CARD_WITH_SHIFT_SUFFIX = new Set(["cashier", "service", "delivery"]);
+    let targetCard = renderedCard.id;
+
+    if (CARD_WITH_SHIFT_SUFFIX.has(renderedCard.id)) {
+      const suffix = isDarkTheme ? "dark" : "day";
+      targetCard = `${renderedCard.id}${suffix}`;
+    }
+
+    const target = targetCard ? `/application?card=${encodeURIComponent(targetCard)}` : "/application";
     router.push(target);
   };
 

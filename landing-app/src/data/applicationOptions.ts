@@ -1,5 +1,24 @@
+﻿export type Shift = "day" | "night";
+
+export type PositionOptionConfig = {
+  label: string;
+  availableDay: boolean;
+  availableNight: boolean;
+};
+
+export type ResolvedPositionOption = {
+  label: string;
+  available: boolean;
+};
+
 export type ApplicationOptionSet = {
-  positionOptions: string[];
+  positionOptions: PositionOptionConfig[];
+  scheduleOptions: string[];
+  locationOptions: string[];
+};
+
+export type ResolvedApplicationOptionSet = {
+  positionOptions: ResolvedPositionOption[];
   scheduleOptions: string[];
   locationOptions: string[];
 };
@@ -7,7 +26,7 @@ export type ApplicationOptionSet = {
 export const streetOptionsByCity: Record<string, string[]> = {
   "თბილისი": [
     "მარშალ გელოვანის გამზირი #22",
-    "ილია ჭავჭავაძის გამზ. #37",
+    "ილია ჭავჭავაძის გამზირი#37",
     "უნივერსიტეტის ქუჩა #39",
     "ზვიად გამსახურდიას სანაპირო #80",
     "სპორტის სასახლე",
@@ -16,100 +35,152 @@ export const streetOptionsByCity: Record<string, string[]> = {
   ],
 };
 
-const sharedScheduleOptions = [
-  "არ მაქვს",
-  "მაქვს, 1 წლამდე",
-  "მაქვს, 1 წელზე მეტი",
-];
-
-const sharedLocationOptions = [
-  "თბილისი",
-  "ქუთაისი",
-  "ბათუმი",
-];
+const sharedScheduleOptions = ["არ მაქვს,", "მაქვს 1 წლამდე", "მაქვს 1 წელზე მეტი"];
+const sharedLocationOptions = ["თბილისი", "ბათუმი"];
 
 export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   default: {
-    positionOptions: ["General position placeholder 1", "General position placeholder 2"],
+    positionOptions: [
+      { label: "General position placeholder 1", availableDay: true, availableNight: true },
+      { label: "General position placeholder 2", availableDay: true, availableNight: true },
+    ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   security: {
-    positionOptions: [
-      "დაცვის თანამშრომელი",
-    ],
+    positionOptions: [{ label: "დაცვის თანამშრომელი", availableDay: false, availableNight: false }],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   kitchen: {
     positionOptions: [
-      "ცხელი კერძების მზარეული",
-      "ცივი კერძების მზარეული",
-      "მზარეულის დამხმარე",
-      "სუშის მზარეული",
-      "კონდიტერი",
-      "ჭურჭლის მრეცხავი",
-      "ხინკლის ცომის სპეციალისტი"
+      { label: "ცხელი კერძების მზარეული", availableDay: false, availableNight: false },
+      { label: "ცივი კერძების მზარეული", availableDay: false, availableNight: false },
+      { label: "მზარეულის დამხმარე", availableDay: false, availableNight: false },
+      { label: "სუშის მზარეული", availableDay: true, availableNight: false },
+      { label: "კონდიტერი", availableDay: false, availableNight: false },
+      { label: "ჭურჭლის მრეცხავი", availableDay: false, availableNight: false },
+      { label: "ხინკლის ცომის სპეციალისტი", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   baker: {
     positionOptions: [
-      "პურ-ფუნთუშეულის მცხობელი",
-      "თონის პურის მცხობელი",
-      "ხაჭაპურის მცხობელი"
+      { label: "პურ-ფუნთუშეულის მცხობელი", availableDay: false, availableNight: false },
+      { label: "თონის პურის მცხობელი", availableDay: false, availableNight: false },
+      { label: "ხაჭაპურის მცხობელი", availableDay: true, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   butchery: {
     positionOptions: [
-      "თევზის ყასაბი",
-      "ხორცის ყასაბი",
+      { label: "თევზის ყასაბი", availableDay: false, availableNight: false },
+      { label: "ხორცის ყასაბი", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   cashier: {
     positionOptions: [
-      "მოლარე",
-      "ღამის ცვლის მოლარე",
+      { label: "მოლარე", availableDay: true, availableNight: false },
+    ],
+    scheduleOptions: sharedScheduleOptions,
+    locationOptions: sharedLocationOptions,
+  },
+  cashiernight: {
+    positionOptions: [
+      { label: "ღამის ცვლის მოლარე", availableDay: false, availableNight: true },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   service: {
     positionOptions: [
-      "კონსულტანტი",
-      "ღამის ცვლის კონსულტანტი",
+      { label: "კონსულტანტი", availableDay: true, availableNight: false },
+    ],
+    scheduleOptions: sharedScheduleOptions,
+    locationOptions: sharedLocationOptions,
+  },
+  servicenight: {
+    positionOptions: [
+      { label: "ღამის ცვლის კონსულტანტი 1", availableDay: false, availableNight: true },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   warehouse: {
     positionOptions: [
-      "საწყობის თანამშრომელი",
-      "წარმოების დამხმარე თანამშრომელი",
+      { label: "საწყობის თანამშრომელი", availableDay: false, availableNight: false },
+      { label: "წარმოების დამხმარე თანამშრომელი", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   delivery: {
     positionOptions: [
-      "მიტანის სერვისის კონსულტანტი(ფიქერი)",
-      "ღამის მიტანის სერვისის კონსულტანტი(ფიქერი)",
+      { label: "მიტენის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: false },
 
+    ],
+    scheduleOptions: sharedScheduleOptions,
+    locationOptions: sharedLocationOptions,
+  },
+  deliverynight: {
+    positionOptions: [
+      { label: "ღამის მიტენის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: true },
+   
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
 };
 
-export const getApplicationOptions = (cardId: string | null | undefined) => {
+const resolvePositionOptions = (
+  options: PositionOptionConfig[],
+  shift: Shift,
+): ResolvedPositionOption[] =>
+  options.map((option) => ({
+    label: option.label,
+    available: shift === "night" ? option.availableNight : option.availableDay,
+  }));
+
+export const getApplicationOptions = (
+  cardId: string | null | undefined,
+  shift: Shift,
+): ResolvedApplicationOptionSet => {
+  const base = cardId ? applicationOptionsByCard[cardId] : undefined;
+  const fallback = base ?? applicationOptionsByCard.default;
+
+  return {
+    positionOptions: resolvePositionOptions(fallback.positionOptions, shift),
+    scheduleOptions: fallback.scheduleOptions,
+    locationOptions: fallback.locationOptions,
+  };
+};
+
+export type ResolvedCardShift = {
+  cardKey: string | null;
+  heroId: string | null;
+  shift: Shift;
+};
+
+export const resolveCardShift = (
+  cardId: string | null | undefined,
+  fallbackShift: Shift,
+): ResolvedCardShift => {
   if (!cardId) {
-    return applicationOptionsByCard.default;
+    return { cardKey: null, heroId: null, shift: fallbackShift };
   }
 
-  return applicationOptionsByCard[cardId] ?? applicationOptionsByCard.default;
+  const match = cardId.match(/^(.*?)(day|night|dark)$/i);
+  if (match) {
+    const base = match[1] || "";
+    const suffix = match[2].toLowerCase();
+    const shiftFromCard: Shift = suffix === "night" || suffix === "dark" ? "night" : "day";
+    const cardKey = suffix === "day" ? base : `${base}night`;
+    return { cardKey: cardKey || null, heroId: base || null, shift: shiftFromCard };
+  }
+
+  return { cardKey: cardId, heroId: cardId, shift: fallbackShift };
 };

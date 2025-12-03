@@ -1,4 +1,4 @@
-import type { StaticImageData } from "next/image";
+﻿import type { StaticImageData } from "next/image";
 
 import Security from "@/media/Security.webp";
 import SecurityMobile from "@/media/SecurityMobile.webp";
@@ -73,6 +73,8 @@ export type HeroCardDetails = {
 
 export type HeroItem = {
   id: string;
+  availableDay: boolean;
+  availableNight: boolean;
   lightSrc: StaticImageData;
   darkSrc?: StaticImageData;
   hoverLightSrc: StaticImageData;
@@ -92,6 +94,8 @@ export type HeroItemWithCard = HeroItem & { card: HeroCardDetails };
 export const heroItems: HeroItem[] = [
   {
     id: "security",
+    availableDay: false,
+    availableNight: false,
     lightSrc: Security,
     darkSrc: Security,
     hoverLightSrc: SecurityHover,
@@ -110,8 +114,10 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "baker",
+    availableDay: true,
+    availableNight: false,
     lightSrc: Baker,
-    darkSrc: BakerDarkMode,
+    darkSrc: Baker,
     hoverLightSrc: BakerHover,
     hoverDarkSrc: BakerHoverDark,
     alt: "Baker preparing fresh bread",
@@ -133,8 +139,10 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "kitchen",
+    availableDay: true,
+    availableNight: false,
     lightSrc: Kitchen,
-    darkSrc: KitchenDarkMode,
+    darkSrc: Kitchen,
     hoverLightSrc: KitchenHover,
     hoverDarkSrc: KitchenHoverDark,
     alt: "Prepared food station inside a kitchen",
@@ -160,8 +168,10 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "butchery",
+    availableDay: false,
+    availableNight: false,
     lightSrc: Butchery,
-    darkSrc: ButcheryDarkMode,
+    darkSrc: Butchery,
     hoverLightSrc: ButcheryHover,
     hoverDarkSrc: ButcheryHoverDark,
     alt: "Butcher working at a meat station",
@@ -182,6 +192,8 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "cashier",
+    availableDay: true,
+    availableNight: true,
     lightSrc: Cashier,
     darkSrc: Cashier,
     hoverLightSrc: CashierHover,
@@ -204,6 +216,8 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "service",
+    availableDay: true,
+    availableNight: true,
     lightSrc: MainScene,
     darkSrc: MainScene,
     hoverLightSrc: MainSceneHover,
@@ -227,8 +241,10 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "warehouse",
+    availableDay: false,
+    availableNight: false,
     lightSrc: Warehouse,
-    darkSrc: WarehouseDarkMode,
+    darkSrc: Warehouse,
     hoverLightSrc: WarehouseHover,
     hoverDarkSrc: WarehouseDarkMode,
     alt: "Warehouse worker moving packaged goods",
@@ -250,6 +266,8 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "delivery",
+    availableDay: false,
+    availableNight: false,
     lightSrc: Delivery,
     darkSrc: Delivery,
     hoverLightSrc: DeliveryHover,
