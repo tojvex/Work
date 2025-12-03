@@ -26,7 +26,7 @@ export type ResolvedApplicationOptionSet = {
 export const streetOptionsByCity: Record<string, string[]> = {
   "თბილისი": [
     "მარშალ გელოვანის გამზირი #22",
-    "ილია ჭავჭავაძის გამზირი#37",
+    "ილია ჭავჭავაძის გამზირი #37",
     "უნივერსიტეტის ქუჩა #39",
     "ზვიად გამსახურდიას სანაპირო #80",
     "სპორტის სასახლე",
@@ -39,14 +39,6 @@ const sharedScheduleOptions = ["არ მაქვს,", "მაქვს 1 წ
 const sharedLocationOptions = ["თბილისი", "ბათუმი"];
 
 export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
-  default: {
-    positionOptions: [
-      { label: "General position placeholder 1", availableDay: true, availableNight: true },
-      { label: "General position placeholder 2", availableDay: true, availableNight: true },
-    ],
-    scheduleOptions: sharedScheduleOptions,
-    locationOptions: sharedLocationOptions,
-  },
   security: {
     positionOptions: [{ label: "დაცვის თანამშრომელი", availableDay: false, availableNight: false }],
     scheduleOptions: sharedScheduleOptions,
