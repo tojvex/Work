@@ -1,3 +1,4 @@
+import { type InputHTMLAttributes } from "react";
 import {
   fieldGroupStyles,
   fieldTitleClasses,
@@ -15,7 +16,7 @@ type TextFieldProps = {
   error?: string | null;
   type?: string;
   autoComplete?: string;
-  inputMode?: string;
+  inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
   pattern?: string;
   maxLength?: number;
   required?: boolean;
