@@ -38,6 +38,15 @@ export const applicationFormCopy = {
     validationFailed: "გთხოვთ შეასწოროთ მონიშნული ველები.",
     privacyConsent: "გთხოვთ დათანხმდეთ პერსონალური მონაცემების გაზიარებას.",
     noAvailablePositions: "ამჟამად პოზიციები არ არის ხელმისაწვდომი. გთხოვთ, მოგვიანებით სცადეთ.",
+    required: "Please fill this in",           // global fallback                                                                             
+    requiredFirstName: "გთხოვთ შეიყვანოთ სახელი",                                                                                               
+    requiredLastName: "გთხოვთ შეიყვანოთ გვარი",                                                                                                 
+    requiredPhone: "გთხოვთ შეიყვანოთ ტელეფონის ნომერი",                                                                                            
+    requiredSchedule: "გთხოვთ აირჩიოთ გამოცდილება",                                                                                                      
+    requiredLocation: "გთხოვთ აირჩიოთ ლოკაცია",                                                                                                      
+    requiredPosition: "გთხოვთ აირჩიოთ პოზიცია",                                                                                                    
+    requiredStreet: "გთხოვთ აირჩიოთ ერთი ან მეტი ფილიალი",                                                                                             
+    // ...existing error strings
   },
   success: "გმადლობთ! თქვენი განაცხადი წარმატებით გაიგზავნა.",
 };

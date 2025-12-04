@@ -16,6 +16,9 @@ export default function ApplicationForm({
   scheduleOptions,
   locationOptions,
 }: ApplicationFormProps) {
+  const errorCopy = applicationFormCopy.errors as Record<string, string | undefined>;
+  const requiredText = errorCopy["required"] ?? "Required";
+
   const {
     values,
     status,
@@ -33,6 +36,7 @@ export default function ApplicationForm({
     <form
       className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-[26px] bg-white/70 px-10 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur"
       onSubmit={handleSubmit}
+      noValidate
     >
       <FormHeader />
 
@@ -98,6 +102,10 @@ export default function ApplicationForm({
         options={scheduleOptions}
         onChange={(value) => handleFieldChange("preferredSchedule", value)}
         required
+        error={
+          fieldErrors.preferredSchedule ||
+          (!values.preferredSchedule && status === "error" ? requiredText : null)
+        }
       />
 
       <SelectField
@@ -109,6 +117,10 @@ export default function ApplicationForm({
         options={locationOptions}
         onChange={(value) => handleFieldChange("preferredLocation", value)}
         required
+        error={
+          fieldErrors.preferredLocation ||
+          (!values.preferredLocation && status === "error" ? requiredText : null)
+        }
       />
 
       {availableStreetOptions.length > 0 ? (
@@ -140,4 +152,3 @@ export default function ApplicationForm({
     </form>
   );
 }
-

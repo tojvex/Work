@@ -1,4 +1,4 @@
-import {
+﻿import {
   useCallback,
   useEffect,
   useMemo,
@@ -39,40 +39,49 @@ const validateFields = (
 ): FieldErrors => {
   const errors = createFieldErrorsState();
   const lettersOnly = /^[\p{L}]+$/u;
+  const errorCopy = applicationFormCopy.errors as Record<string, string | undefined>;
+  const required = errorCopy["required"] ?? "გთხოვთ შეავსოთ ველი";
+  const requiredFirstName = errorCopy["requiredFirstName"] ?? required;
+  const requiredLastName = errorCopy["requiredLastName"] ?? required;
+  const requiredPhone = errorCopy["requiredPhone"] ?? required;
+  const requiredSchedule = errorCopy["requiredSchedule"] ?? required;
+  const requiredLocation = errorCopy["requiredLocation"] ?? required;
+  const requiredPosition = errorCopy["requiredPosition"] ?? required;
+  const requiredStreet = errorCopy["requiredStreet"] ?? required;
 
   if (!values.firstName.trim()) {
-    errors.firstName = "გთხოვთ შეიყვანეთ სახელი";
+    errors.firstName = requiredFirstName;
   } else if (!lettersOnly.test(values.firstName.trim())) {
     errors.firstName = applicationFormCopy.errors.firstNameInvalid;
   }
 
   if (!values.lastName.trim()) {
-    errors.lastName = "გთხოვთ შეიყვანეთ გვარი";
+    errors.lastName = requiredLastName;
   } else if (!lettersOnly.test(values.lastName.trim())) {
     errors.lastName = applicationFormCopy.errors.lastNameInvalid;
   }
 
   const phoneDigits = /^[0-9]{9}$/;
   if (!values.phone.trim()) {
-    errors.phone = "გთხოვთ შეიყვანეთ ტელეფონის ნომერი";
+    errors.phone = requiredPhone;
   } else if (!phoneDigits.test(values.phone.trim())) {
     errors.phone = applicationFormCopy.errors.phoneInvalid;
   }
 
   if (streets.length > 0 && values.preferredStreets.length === 0) {
-    errors.preferredStreet = "გთხოვთ აირჩიოთ ფილიალი";
+    errors.preferredStreet = requiredStreet;
   }
 
   if (!values.preferredSchedule) {
-    errors.preferredSchedule = "გთხოვთ აირჩიოთ გამოცდილება";
+    errors.preferredSchedule = requiredSchedule;
   }
 
   if (!values.preferredLocation) {
-    errors.preferredLocation = "გთხოვთ აირჩიოთ ლოკაცია";
+    errors.preferredLocation = requiredLocation;
   }
 
   if (!values.preferredPosition) {
-    errors.preferredPosition = "გთხოვთ აირჩიოთ პოზიცია";
+    errors.preferredPosition = requiredPosition;
   } else {
     const match = positions.find((option) => option.label === values.preferredPosition);
     if (!match) {
@@ -286,3 +295,5 @@ export const useApplicationForm = ({
     values,
   };
 };
+
+

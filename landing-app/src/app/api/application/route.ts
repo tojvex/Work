@@ -4,18 +4,20 @@ import {
   appendApplicationRow,
   type ApplicationSubmission,
 } from "@/lib/googleSheets";
-import { applicationOptionsByCard } from "@/data/applicationOptions";
+import {
+  applicationOptionsByCard,
+  type PositionOptionConfig,
+} from "@/data/applicationOptions";
 
-const normalizePosition = (value: unknown) =>
-  typeof value === "string" ? value.trim() : "";
+const normalizePositionLabel = (value: PositionOptionConfig | string) =>
+  (typeof value === "string" ? value : value.label).trim();
 
 const POSITION_TO_WORKSHEET = new Map<string, string>(
   Object.entries(applicationOptionsByCard)
     .filter(([key]) => key !== "default")
     .flatMap(([, optionSet]) =>
       optionSet.positionOptions.map((position) => {
-        const label = typeof position === "string" ? position : position.label;
-        const normalized = normalizePosition(label);
+        const normalized = normalizePositionLabel(position);
         return [normalized, normalized] as const;
       }),
     ),
@@ -25,7 +27,7 @@ const resolveWorksheetForSubmission = (
   submission: ApplicationSubmission,
 ): string | undefined => {
   if (submission.preferredPosition) {
-    const normalizedPosition = normalizePosition(submission.preferredPosition);
+    const normalizedPosition = normalizePositionLabel(submission.preferredPosition);
 
     if (!normalizedPosition) {
       return undefined;
