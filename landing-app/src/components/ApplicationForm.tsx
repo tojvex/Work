@@ -1,601 +1,141 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-
-import { streetOptionsByCity, type ResolvedPositionOption } from "@/data/applicationOptions";
-
-type ApplicationFormValues = {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  preferredPosition: string;
-  preferredSchedule: string;
-  preferredLocation: string;
-  preferredStreets: string[];
-  privacyConsent: boolean;
-};
-
-type ApplicationSubmissionPayload = Omit<
-  ApplicationFormValues,
-  "privacyConsent"
->;
-
-type FieldErrors = {
-  firstName: string | null;
-  lastName: string | null;
-  phone: string | null;
-  preferredPosition: string | null;
-  preferredStreet: string | null;
-};
-
-const initialValues: ApplicationFormValues = {
-  firstName: "",
-  lastName: "",
-  phone: "",
-  preferredPosition: "",
-  preferredSchedule: "",
-  preferredLocation: "",
-  preferredStreets: [],
-  privacyConsent: false,
-};
-
-const inputBaseStyles =
-  "w-full rounded-[9px] bg-[#d7d7d7] px-5 py-4 text-base placeholder:text-sm placeholder:text-[#0000003D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1DA94A] focus-visible:outline-offset-2 transition";
-
-const fieldGroupStyles = "flex flex-col gap-2";
-const fieldTitleClasses = "pl-1 text-base font-semibold text-[#000000]";
-const fieldTitleStyle: CSSProperties = { fontFamily: "var(--font-firago)" };
-
-type ApplicationFormProps = {
-  positionOptions: ResolvedPositionOption[];
-  scheduleOptions: string[];
-  locationOptions: string[];
-};
+import { FormHeader } from "./application-form/components/FormHeader";
+import { FormStatus } from "./application-form/components/FormStatus";
+import { PositionSelect } from "./application-form/components/PositionSelect";
+import { PrivacyConsent } from "./application-form/components/PrivacyConsent";
+import { SelectField } from "./application-form/components/SelectField";
+import { StreetSelector } from "./application-form/components/StreetSelector";
+import { TextField } from "./application-form/components/TextField";
+import { applicationFormCopy } from "./application-form/copy";
+import type { ApplicationFormProps } from "./application-form/types";
+import { useApplicationForm } from "./application-form/useApplicationForm";
 
 export default function ApplicationForm({
   positionOptions,
   scheduleOptions,
   locationOptions,
 }: ApplicationFormProps) {
-  const [values, setValues] = useState<ApplicationFormValues>(initialValues);
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // NEW: field-level errors state
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({
-    firstName: null,
-    lastName: null,
-    phone: null,
-    preferredPosition: null,
-    preferredStreet: null,
-  });
-
-  useEffect(() => {
-    setValues((prev) => {
-      const next = { ...prev };
-      const hasPreferredPosition =
-        next.preferredPosition &&
-        positionOptions.some(
-          (option) => option.label === next.preferredPosition && option.available,
-        );
-      if (next.preferredPosition && !hasPreferredPosition) {
-        next.preferredPosition = "";
-      }
-      if (next.preferredSchedule && !scheduleOptions.includes(next.preferredSchedule)) {
-        next.preferredSchedule = "";
-      }
-      if (next.preferredLocation && !locationOptions.includes(next.preferredLocation)) {
-        next.preferredLocation = "";
-      }
-      const streetsForCity = streetOptionsByCity[next.preferredLocation] ?? [];
-      if (streetsForCity.length === 0) {
-        next.preferredStreets = [];
-      } else if (next.preferredStreets.length > 0) {
-        next.preferredStreets = next.preferredStreets.filter((street) =>
-          streetsForCity.includes(street),
-        );
-      }
-      return next;
-    });
-  }, [positionOptions, scheduleOptions, locationOptions]);
-
-  const handleFieldChange = (
-    field: keyof ApplicationFormValues,
-    value: string | boolean,
-  ) => {
-    setValues((prev) => {
-      if (field === "preferredLocation") {
-        return {
-          ...prev,
-          preferredLocation: value as string,
-          preferredStreets: [],
-        };
-      }
-
-      return {
-        ...prev,
-        [field]: value,
-      };
-    });
-
-    // Clear the error for this field as user edits
-    if (
-      field === "firstName" ||
-      field === "lastName" ||
-      field === "phone" ||
-      field === "preferredPosition"
-    ) {
-      setFieldErrors((prev) => ({ ...prev, [field]: null }));
-    }
-
-    if (field === "preferredLocation") {
-      setFieldErrors((prev) => ({ ...prev, preferredStreet: null }));
-    }
-  };
-
-  const toggleStreetSelection = (street: string) => {
-    setValues((prev) => {
-      const alreadySelected = prev.preferredStreets.includes(street);
-      const preferredStreets = alreadySelected
-        ? prev.preferredStreets.filter((item) => item !== street)
-        : [...prev.preferredStreets, street];
-
-      return { ...prev, preferredStreets };
-    });
-
-    setFieldErrors((prev) => ({ ...prev, preferredStreet: null }));
-  };
-
-  const resetForm = () => {
-    setValues(initialValues);
-    setFieldErrors({
-      firstName: null,
-      lastName: null,
-      phone: null,
-      preferredPosition: null,
-      preferredStreet: null,
-    });
-  };
-
-  // NEW: validation helper
-  const validateFields = (
-    v: ApplicationFormValues,
-    streets: string[],
-    positions: ResolvedPositionOption[],
-  ): FieldErrors => {
-    const errors: FieldErrors = {
-      firstName: null,
-      lastName: null,
-      phone: null,
-      preferredPosition: null,
-      preferredStreet: null,
-    };
-
-    // Only letters (Unicode letters), no spaces/symbols
-    const lettersOnly = /^[\p{L}]+$/u;
-
-    if (!v.firstName.trim()) {
-      errors.firstName = "Required";
-    } else if (!lettersOnly.test(v.firstName.trim())) {
-      errors.firstName = "გთხოვთ ჩაწერეთ სახელი მხოლოდ ასოებით";
-    }
-
-    if (!v.lastName.trim()) {
-      errors.lastName = "Required";
-    } else if (!lettersOnly.test(v.lastName.trim())) {
-      errors.lastName = "გთხოვთ ჩაწერეთ გვარი მხოლოდ ასოებით";
-    }
-
-    // Exactly 9 digits, no symbols/spaces
-    const phoneDigits = /^\d{9}$/;
-    if (!v.phone.trim()) {
-      errors.phone = "Required";
-    } else if (!phoneDigits.test(v.phone.trim())) {
-      errors.phone = "ჩაწერეთ ზუსტად 9 ნიშნა ნომერი";
-    }
-
-    if (streets.length > 0 && v.preferredStreets.length === 0) {
-      errors.preferredStreet = "Required";
-    }
-
-    if (!v.preferredPosition) {
-      errors.preferredPosition = "Required";
-    } else {
-      const match = positions.find((option) => option.label === v.preferredPosition);
-      if (!match) {
-        errors.preferredPosition = " ں- ں? ں> ںr ں> ں? ںے ں\"  ں> ں? ںo ں? ں¦ ں\" ں> ں\" ں` ں~ ں­  ںs ں? ںo ں~ ں­  ں' ں? ںھ ں~ ں- ںs ں\" ںs ں~";
-      } else if (!match.available) {
-        errors.preferredPosition = " ںz ں? ںs ں~ ں› ں~  ں' ں? ںo ں? ں¦ ںr ں? ں\" ں~ ں­ ں~  ں- ں? ں> ں? ں ں?";
-      }
-    }
-
-    return errors;
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!hasAvailablePositions) {
-      setErrorMessage("ამ ცვლაში არჩეული მიმართულებით ვაკანსია არ არის.");
-      setStatus("error");
-      return;
-    }
-
-    const nextErrors = validateFields(values, availableStreetOptions, positionOptions);
-    setFieldErrors(nextErrors);
-
-    if (
-      nextErrors.firstName ||
-      nextErrors.lastName ||
-      nextErrors.phone ||
-      nextErrors.preferredStreet ||
-      nextErrors.preferredPosition
-    ) {
-      setErrorMessage("გთხოვთ შეასწოროთ გაწითლებული ველი");
-      setStatus("error");
-      return;
-    }
-
-    if (!values.privacyConsent) {
-      setErrorMessage("გთხოვთ დათანხმდეთ კონფიდენციალურობის პოლიტიკას");
-      setStatus("error");
-      return;
-    }
-
-    setStatus("submitting");
-    setErrorMessage(null);
-
-    try {
-      const submissionPayload: ApplicationSubmissionPayload = {
-        firstName: values.firstName.trim(),
-        lastName: values.lastName.trim(),
-        phone: values.phone.trim(),
-        preferredPosition: values.preferredPosition,
-        preferredSchedule: values.preferredSchedule,
-        preferredLocation: values.preferredLocation,
-        preferredStreets: values.preferredStreets,
-      };
-
-      const response = await fetch("/api/application", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submissionPayload),
-      });
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        const message =
-          payload?.message ??
-          payload?.error ??
-          "Unable to submit the form right now.";
-        throw new Error(message);
-      }
-
-      setStatus("success");
-      resetForm();
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unexpected error occurred.";
-      setErrorMessage(message);
-      setStatus("error");
-    }
-  };
-
-  const availableStreetOptions = useMemo(
-    () => streetOptionsByCity[values.preferredLocation] ?? [],
-    [values.preferredLocation],
-  );
-
-  const hasAvailablePositions = positionOptions.some((option) => option.available);
-  const selectedPositionOption = positionOptions.find(
-    (option) => option.label === values.preferredPosition,
-  );
-  const positionSelectColor = selectedPositionOption
-    ? selectedPositionOption.available
-      ? "#004E1B"
-      : "#b3261e"
-    : "rgba(0, 0, 0, 0.24)";
+  const {
+    values,
+    status,
+    errorMessage,
+    fieldErrors,
+    availableStreetOptions,
+    hasAvailablePositions,
+    positionSelectColor,
+    handleFieldChange,
+    handleSubmit,
+    toggleStreetSelection,
+  } = useApplicationForm({ positionOptions, scheduleOptions, locationOptions });
 
   return (
     <form
       className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-[26px] bg-white/70 px-10 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur"
       onSubmit={handleSubmit}
     >
-      <div className="mb-2 text-center">
-        <p className="text-sm font-medium" style={{ color: "rgba(0, 0, 0, 0.38)" }}>
-          გთხოვთ შეავსოთ ქვემოთ მოცემული ფორმა
-        </p>
-      </div>
+      <FormHeader />
 
-      <label
-        htmlFor="application-first-name"
-        className={`${fieldGroupStyles} text-sm`}
-      >
-        <span className={fieldTitleClasses} style={fieldTitleStyle}>სახელი</span>
-        <input
-          id="application-first-name"
-          type="text"
-          name="firstName"
-          autoComplete="given-name"
-          placeholder="ჩაწერე სახელი"
-          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.firstName ? "outline outline-red-500" : ""}`}
-          value={values.firstName}
-          onChange={(event) =>
-            handleFieldChange("firstName", event.currentTarget.value)
-          }
-          required
-          aria-invalid={!!fieldErrors.firstName}
-          aria-errormessage={fieldErrors.firstName ? "firstName-error" : undefined}
-        />
-        {fieldErrors.firstName && (
-          <span id="firstName-error" className="pl-1 text-xs text-red-600">
-            {fieldErrors.firstName}
-          </span>
-        )}
-      </label>
+      <TextField
+        id="application-first-name"
+        name="firstName"
+        label={applicationFormCopy.labels.firstName}
+        placeholder={applicationFormCopy.placeholders.firstName}
+        value={values.firstName}
+        onChange={(value) => handleFieldChange("firstName", value)}
+        error={fieldErrors.firstName}
+        autoComplete="given-name"
+        required
+      />
 
-      <label
-        htmlFor="application-last-name"
-        className={`${fieldGroupStyles} text-sm`}
-      >
-        <span className={fieldTitleClasses} style={fieldTitleStyle}>გვარი</span>
-        <input
-          id="application-last-name"
-          type="text"
-          name="lastName"
-          autoComplete="family-name"
-          placeholder="ჩაწერე გვარი"
-          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.lastName ? "outline outline-red-500" : ""}`}
-          value={values.lastName}
-          onChange={(event) =>
-            handleFieldChange("lastName", event.currentTarget.value)
-          }
-          required
-          aria-invalid={!!fieldErrors.lastName}
-          aria-errormessage={fieldErrors.lastName ? "lastName-error" : undefined}
-        />
-        {fieldErrors.lastName && (
-          <span id="lastName-error" className="pl-1 text-xs text-red-600">
-            {fieldErrors.lastName}
-          </span>
-        )}
-      </label>
+      <TextField
+        id="application-last-name"
+        name="lastName"
+        label={applicationFormCopy.labels.lastName}
+        placeholder={applicationFormCopy.placeholders.lastName}
+        value={values.lastName}
+        onChange={(value) => handleFieldChange("lastName", value)}
+        error={fieldErrors.lastName}
+        autoComplete="family-name"
+        required
+      />
 
-      <label
-        htmlFor="application-phone"
-        className={`${fieldGroupStyles} text-sm`}
-      >
-        <span className={fieldTitleClasses} style={fieldTitleStyle}>ნომერი</span>
-        <input
-          id="application-phone"
-          type="tel"
-          name="phone"
-          autoComplete="tel"
-          placeholder="ჩაწერე 9 ციფრი (მაგ. 5XXXXXXXX)"
-          className={`${inputBaseStyles} text-[#202020] ${fieldErrors.phone ? "outline outline-red-500" : ""}`}
-          value={values.phone}
-          onChange={(event) => {
-            const digitsOnly = event.currentTarget.value
-              .replace(/\D/g, "")
-              .slice(0, 9);
-            handleFieldChange("phone", digitsOnly);
-          }}
-          required
-          inputMode="numeric"
-          pattern="\d{9}"
-          maxLength={9}
-          aria-invalid={!!fieldErrors.phone}
-          aria-errormessage={fieldErrors.phone ? "phone-error" : undefined}
-        />
-        {fieldErrors.phone && (
-          <span id="phone-error" className="pl-1 text-xs text-red-600">
-            {fieldErrors.phone}
-          </span>
-        )}
-      </label>
+      <TextField
+        id="application-phone"
+        name="phone"
+        type="tel"
+        label={applicationFormCopy.labels.phone}
+        placeholder={applicationFormCopy.placeholders.phone}
+        value={values.phone}
+        onChange={(value) => {
+          const digitsOnly = value.replace(/\D/g, "").slice(0, 9);
+          handleFieldChange("phone", digitsOnly);
+        }}
+        error={fieldErrors.phone}
+        autoComplete="tel"
+        inputMode="numeric"
+        pattern="\\d{9}"
+        maxLength={9}
+        required
+      />
 
-      <label
-        htmlFor="application-position"
-        className={`${fieldGroupStyles} text-sm`}
-      >
-        <span className={fieldTitleClasses} style={fieldTitleStyle}>სასურველი პოზიცია</span>
-        <div className="relative">
-          <select
-            id="application-position"
-            name="preferredPosition"
-            className={`${inputBaseStyles} appearance-none pr-12`}
-            style={{
-              color: positionSelectColor,
-            }}
-            value={values.preferredPosition}
-            onChange={(event) =>
-              handleFieldChange("preferredPosition", event.currentTarget.value)
-            }
-            required
-            disabled={!hasAvailablePositions}
-            aria-invalid={!!fieldErrors.preferredPosition}
-            aria-errormessage={fieldErrors.preferredPosition ? "position-error" : undefined}
-          >
-            <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
-              მიუთითე სასურველი პოზიცია
-            </option>
-            {positionOptions.map((option) => {
-              const disabled = !option.available;
-              return (
-                <option
-                  key={option.label}
-                  value={option.label}
-                  disabled={disabled}
-                  style={{
-                    color: disabled ? "#b3261e" : "#004E1B",
-                    textDecoration: disabled ? "line-through" : "none",
-                  }}
-                >
-                  {option.label}
-                  {disabled ? " (დროებით მიუწვდომელი)" : ""}
-                </option>
-              );
-            })}
-          </select>
-          <span className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-lg text-[#5c5c5c]">
-            v
-          </span>
-        </div>
-        {fieldErrors.preferredPosition && (
-          <span id="position-error" className="pl-1 text-xs text-red-600">
-            {fieldErrors.preferredPosition}
-          </span>
-        )}
-        {!hasAvailablePositions ? (
-          <span className="pl-1 text-xs text-red-600">
-            ამ ცვლაში ამ მიმართულებით ვაკანსია დროებით არ არის.
-          </span>
-        ) : null}
-      </label>
+      <PositionSelect
+        id="application-position"
+        value={values.preferredPosition}
+        options={positionOptions}
+        onChange={(value) => handleFieldChange("preferredPosition", value)}
+        color={positionSelectColor}
+        hasAvailablePositions={hasAvailablePositions}
+        error={fieldErrors.preferredPosition}
+      />
 
-      <label
-        htmlFor="application-schedule"
-        className={`${fieldGroupStyles} text-sm`}
-      >
-        <span className={fieldTitleClasses} style={fieldTitleStyle}>გამოცდილება</span>
-        <div className="relative">
-          <select
-            id="application-schedule"
-            name="preferredSchedule"
-            className={`${inputBaseStyles} appearance-none pr-12`}
-            style={{
-              color: values.preferredSchedule
-                ? "#004E1B"
-                : "rgba(0, 0, 0, 0.24)",
-            }}
-            value={values.preferredSchedule}
-            onChange={(event) =>
-              handleFieldChange("preferredSchedule", event.currentTarget.value)
-            }
-            required
-          >
-            <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
-                მიუთითე შენი გამოცდილება
-            </option>
-            {scheduleOptions.map((option) => (
-              <option key={option} value={option} style={{ color: "#004E1B" }}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <span className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-lg text-[#5c5c5c]">
-            v
-          </span>
-        </div>
-      </label>
+      <SelectField
+        id="application-schedule"
+        name="preferredSchedule"
+        label={applicationFormCopy.labels.schedule}
+        placeholder={applicationFormCopy.placeholders.schedule}
+        value={values.preferredSchedule}
+        options={scheduleOptions}
+        onChange={(value) => handleFieldChange("preferredSchedule", value)}
+        required
+      />
 
-      <label
-        htmlFor="application-location"
-        className={`${fieldGroupStyles} text-sm`}
-      >
-        <span className={fieldTitleClasses} style={fieldTitleStyle}>ლოკაცია</span>
-        <div className="relative">
-          <select
-            id="application-location"
-            name="preferredLocation"
-            className={`${inputBaseStyles} appearance-none pr-12`}
-            style={{
-              color: values.preferredLocation
-                ? "#004E1B"
-                : "rgba(0, 0, 0, 0.24)",
-            }}
-            value={values.preferredLocation}
-            onChange={(event) =>
-              handleFieldChange("preferredLocation", event.currentTarget.value)
-            }
-            required
-          >
-            <option value="" disabled style={{ color: "rgba(0, 0, 0, 0.24)" }}>
-              მიუთითე სასურველი ლოკაცია
-            </option>
-            {locationOptions.map((option) => (
-              <option key={option} value={option} style={{ color: "#004E1B" }}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <span className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-lg text-[#5c5c5c]">
-            v
-          </span>
-        </div>
-      </label>
+      <SelectField
+        id="application-location"
+        name="preferredLocation"
+        label={applicationFormCopy.labels.location}
+        placeholder={applicationFormCopy.placeholders.location}
+        value={values.preferredLocation}
+        options={locationOptions}
+        onChange={(value) => handleFieldChange("preferredLocation", value)}
+        required
+      />
 
       {availableStreetOptions.length > 0 ? (
-        <div className={`${fieldGroupStyles} text-sm`}>
-          <span className={fieldTitleClasses} style={fieldTitleStyle}>ფილიალი</span>
-          <span className="pl-1 text-xs text-[#5c5c5c]">აირჩიეთ ერთი ან მეტი ფილიალი</span>
-          <div className="flex flex-wrap gap-2">
-            {availableStreetOptions.map((option) => {
-              const selected = values.preferredStreets.includes(option);
-              return (
-                <label
-                  key={option}
-                  className={`flex items-center gap-2 rounded-[9px] border px-3 py-2 text-sm transition ${
-                    selected
-                      ? "border-[#1DA94A] bg-[#e4f4e9] shadow-sm"
-                      : "border-[#d7d7d7] bg-[#f1f1f1]"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-[#9b9b9b] text-[#1DA94A] accent-[#1DA94A]"
-                    checked={selected}
-                    onChange={() => toggleStreetSelection(option)}
-                  />
-                  <span className="text-[#202020]">{option}</span>
-                </label>
-              );
-            })}
-          </div>
-          {fieldErrors.preferredStreet && (
-            <span className="pl-1 text-xs text-red-600">
-              {fieldErrors.preferredStreet}
-            </span>
-          )}
-        </div>
-      ) : null}
-
-      <label className="flex items-center gap-3 text-xs">
-        <input
-          type="checkbox"
-          className="h-5 w-5 shrink-0 rounded border border-[#9b9b9b] bg-white accent-[#1DA94A] focus-visible:outline-2 focus-visible:outline-[#1DA94A]"
-          checked={values.privacyConsent}
-          onChange={(event) =>
-            handleFieldChange("privacyConsent", event.currentTarget.checked)
-          }
-          required
+        <StreetSelector
+          options={availableStreetOptions}
+          selected={values.preferredStreets}
+          onToggle={toggleStreetSelection}
+          error={fieldErrors.preferredStreet}
         />
-        <span className="text-xs font-normal leading-snug text-black">
-          თანხმობა პერსონალური მონაცემების გაზიარებაზე.
-        </span>
-      </label>
-
-      {status === "error" && errorMessage ? (
-        <p className="text-sm text-red-600">{errorMessage}</p>
       ) : null}
 
-      {status === "success" ? (
-        <p className="text-sm text-[#1DA94A]">
-          თქვენი განაცხადი წარმატებით გადაიგზავნა
-        </p>
-      ) : null}
+      <PrivacyConsent
+        checked={values.privacyConsent}
+        onChange={(checked) => handleFieldChange("privacyConsent", checked)}
+      />
+
+      <FormStatus status={status} errorMessage={errorMessage} />
 
       <button
         type="submit"
-        className="mt-4 self-center min-w-[220px] rounded-[9px] bg-[#1DA94A] px-16 py-3 text-lg font-bold text-white transition hover:bg-[#17853a] disabled:cursor-not-allowed disabled:bg-[#7bc891]"
+        className="mt-4 min-w-[220px] self-center rounded-[9px] bg-[#1DA94A] px-16 py-3 text-lg font-bold text-white transition hover:bg-[#17853a] disabled:cursor-not-allowed disabled:bg-[#7bc891]"
         style={{ fontFamily: "DejaVu Sans", fontWeight: 700 }}
         disabled={status === "submitting"}
       >
-        {status === "submitting" ? "იგზავნება..." : "გაგზავნა"}
+        {status === "submitting"
+          ? applicationFormCopy.submit.submitting
+          : applicationFormCopy.submit.idle}
       </button>
     </form>
   );
