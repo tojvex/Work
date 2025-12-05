@@ -4,10 +4,28 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const DOOR_ANIMATION_DURATION = 1500;
+const INTRO_STORAGE_KEY = "introDoorSeen";
 
 export default function IntroDoor() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasCheckedVisit, setHasCheckedVisit] = useState(false);
+
+  // Show only on first visit; skip on refresh or return visits.
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const hasSeenIntro = window.localStorage.getItem(INTRO_STORAGE_KEY) === "1";
+
+    if (!hasSeenIntro) {
+      setIsVisible(true);
+      window.localStorage.setItem(INTRO_STORAGE_KEY, "1");
+    }
+
+    setHasCheckedVisit(true);
+  }, []);
 
   useEffect(() => {
     if (isVisible) {
@@ -36,13 +54,17 @@ export default function IntroDoor() {
     };
   }, [isOpen]);
 
+  if (!hasCheckedVisit && !isVisible) {
+    return null;
+  }
+
   if (!isVisible) {
     return null;
   }
 
   return (
     <div className="fixed inset-0 z-999 flex items-center justify-center bg-black">
-      <div className="relative aspect-video w-full max-w-7xl overflow-hidden">
+      <div className="relative aspect-video w-screen max-w-none overflow-hidden">
         <div className="absolute inset-0 flex">
           <button
             type="button"
