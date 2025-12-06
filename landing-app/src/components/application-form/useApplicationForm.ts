@@ -61,7 +61,7 @@ const validateFields = (
     errors.lastName = applicationFormCopy.errors.lastNameInvalid;
   }
 
-  const phoneDigits = /^[0-9]{9}$/;
+  const phoneDigits = /^5[0-9]{8}$/;
   if (!values.phone.trim()) {
     errors.phone = requiredPhone;
   } else if (!phoneDigits.test(values.phone.trim())) {

@@ -53,25 +53,34 @@ export async function POST(request: Request) {
   try {
     const payload = (await request.json()) as ApplicationSubmission | null;
 
-    if (!payload || typeof payload !== "object") {
+  if (!payload || typeof payload !== "object") {
+    return NextResponse.json(
+      { message: "Invalid request payload." },
+      { status: 400 },
+    );
+    }
+
+  for (const field of REQUIRED_FIELDS) {
+    if (!payload[field]) {
       return NextResponse.json(
-        { message: "Invalid request payload." },
+        { message: `Missing required field: ${field}.` },
         { status: 400 },
       );
     }
+  }
 
-    for (const field of REQUIRED_FIELDS) {
-      if (!payload[field]) {
-        return NextResponse.json(
-          { message: `Missing required field: ${field}.` },
-          { status: 400 },
-        );
-      }
-    }
+  const phone = typeof payload.phone === "string" ? payload.phone.trim() : "";
+  const phonePattern = /^5\d{8}$/;
+  if (!phonePattern.test(phone)) {
+    return NextResponse.json(
+      { message: "Phone number should start with 5 for example 5XXXXXXXX" },
+      { status: 400 },
+    );
+  }
 
-    const worksheet = resolveWorksheetForSubmission(payload);
+  const worksheet = resolveWorksheetForSubmission(payload);
 
-    await appendApplicationRow(payload, worksheet);
+  await appendApplicationRow({ ...payload, phone }, worksheet);
 
     return NextResponse.json({ success: true });
   } catch (error) {

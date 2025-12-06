@@ -32,13 +32,13 @@ export const applicationFormCopy = {
   errors: {
     firstNameInvalid: "გთხოვთ ჩაწერეთ სახელი მხოლოდ ასოებით",
     lastNameInvalid: "გთხოვთ ჩაწერეთ გვარი მხოლოდ ასოებით",
-    phoneInvalid: "ტელეფონის ნომერი უნდა შეიცავდეს ზუსტად 9 ციფრს.",
+    phoneInvalid: "გთხოვთ ჩაწერეთ ვალიდური ნომერი (მაგ. 5XXXXXXXX)",
     positionNotFound: "არჩეული პოზიცია არ არის ვალიდური.",
     positionUnavailable: "არჩეული პოზიცია არ არის ხელმისაწვდომი.",
     validationFailed: "გთხოვთ შეასწოროთ მონიშნული ველები.",
     privacyConsent: "გთხოვთ დათანხმდეთ პერსონალური მონაცემების გაზიარებას.",
     noAvailablePositions: "ამჟამად პოზიციები არ არის ხელმისაწვდომი. გთხოვთ, მოგვიანებით სცადეთ.",
-    required: "Please fill this in",           // global fallback                                                                             
+    required: "გთხოვთ შეავსოთ ველი",           // global fallback                                                                             
     requiredFirstName: "გთხოვთ შეიყვანოთ სახელი",                                                                                               
     requiredLastName: "გთხოვთ შეიყვანოთ გვარი",                                                                                                 
     requiredPhone: "გთხოვთ შეიყვანოთ ტელეფონის ნომერი",                                                                                            
