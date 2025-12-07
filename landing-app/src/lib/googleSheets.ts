@@ -11,6 +11,12 @@ export type ApplicationSubmission = {
   preferredStreets?: string[];
 };
 
+export type AppendResult = {
+  appended: boolean;
+  duplicate: boolean;
+  timestamp: string;
+};
+
 const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 
 let sheetsClient: ReturnType<typeof google.sheets> | null = null;
@@ -64,10 +70,100 @@ const getSheetsClient = async () => {
   return sheetsClient;
 };
 
+const normalize = (value: string) => value.trim().toLowerCase();
+
+const buildLocationValue = (submission: ApplicationSubmission) => {
+  const location = submission.preferredLocation.trim();
+
+  const preferredStreets = Array.isArray(submission.preferredStreets)
+    ? submission.preferredStreets.map((street) => street.trim()).filter(Boolean)
+    : submission.preferredStreet
+      ? [submission.preferredStreet.trim()]
+      : [];
+
+  const uniqueStreets = [...new Set(preferredStreets)];
+
+  return uniqueStreets.length > 0
+    ? uniqueStreets.map((street) => `${location}- ${street}`).join(", ")
+    : location;
+};
+
+const createSubmissionSignature = (
+  submission: ApplicationSubmission,
+  locationValue: string,
+) =>
+  [
+    normalize(submission.firstName),
+    normalize(submission.lastName),
+    submission.phone.trim(),
+    normalize(submission.preferredPosition),
+    normalize(submission.preferredSchedule),
+    normalize(locationValue),
+  ].join("|");
+
+const isDuplicateSubmission = async (
+  submission: ApplicationSubmission,
+  locationValue: string,
+  worksheet?: string,
+): Promise<boolean> => {
+  const sheets = await getSheetsClient();
+  const spreadsheetId = getSpreadsheetId();
+  const range = getWorksheetRange(worksheet);
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range,
+    majorDimension: "ROWS",
+  });
+
+  const rows = response.data.values ?? [];
+  if (rows.length === 0) {
+    return false;
+  }
+
+  // Prevent accidental rapid duplicates (e.g., double clicks) by checking
+  // recent rows for an identical signature within the dedup window.
+  // Only look at the most recent rows to keep the request light.
+  const recentRows = rows.slice(-40);
+  const targetSignature = createSubmissionSignature(submission, locationValue);
+  const dedupWindowMs = 10 * 60 * 1000; // 10 minutes
+  const now = Date.now();
+
+  return recentRows.some((row) => {
+    const [timestamp, firstName, lastName, phone, position, schedule, location] = row;
+    if (!phone || !position || !schedule || !location) {
+      return false;
+    }
+
+    const rowSignature = [
+      normalize(String(firstName ?? "")),
+      normalize(String(lastName ?? "")),
+      String(phone ?? "").trim(),
+      normalize(String(position ?? "")),
+      normalize(String(schedule ?? "")),
+      normalize(String(location ?? "")),
+    ].join("|");
+
+    if (rowSignature !== targetSignature) {
+      return false;
+    }
+
+    if (!timestamp) {
+      return true;
+    }
+
+    const parsedTimestamp = Date.parse(String(timestamp));
+    if (Number.isNaN(parsedTimestamp)) {
+      return true;
+    }
+
+    return now - parsedTimestamp <= dedupWindowMs;
+  });
+};
+
 export const appendApplicationRow = async (
   submission: ApplicationSubmission,
   worksheet?: string,
-) => {
+): Promise<AppendResult> => {
   const sheets = await getSheetsClient();
   const spreadsheetId = getSpreadsheetId();
   const range = getWorksheetRange(worksheet);
@@ -83,22 +179,12 @@ export const appendApplicationRow = async (
     hour12: false,
   });
 
-  const location = submission.preferredLocation.trim();
+  const locationValue = buildLocationValue(submission);
 
-  const preferredStreets = Array.isArray(submission.preferredStreets)
-    ? submission.preferredStreets.map((street) => street.trim()).filter(Boolean)
-    : submission.preferredStreet
-      ? [submission.preferredStreet.trim()]
-      : [];
-
-  const uniqueStreets = [...new Set(preferredStreets)];
-
-  const locationValue =
-    uniqueStreets.length > 0
-      ? uniqueStreets
-          .map((street) => `${location}- ${street}`)
-          .join(", ")
-      : location;
+  const duplicate = await isDuplicateSubmission(submission, locationValue, worksheet);
+  if (duplicate) {
+    return { appended: false, duplicate: true, timestamp };
+  }
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
@@ -119,4 +205,6 @@ export const appendApplicationRow = async (
       ],
     },
   });
+
+  return { appended: true, duplicate: false, timestamp };
 };

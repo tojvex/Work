@@ -1,7 +1,8 @@
-﻿import {
+import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type FormEvent,
 } from "react";
@@ -103,6 +104,7 @@ export const useApplicationForm = ({
   const [status, setStatus] = useState<ApplicationFormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>(createFieldErrorsState());
+  const submissionLockRef = useRef(false);
 
   useEffect(() => {
     setValues((prev) => {
@@ -211,31 +213,36 @@ export const useApplicationForm = ({
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      if (!hasAvailablePositions) {
-        setErrorMessage(applicationFormCopy.errors.noAvailablePositions);
-        setStatus("error");
+      if (submissionLockRef.current) {
         return;
       }
-
-      const nextErrors = validateFields(values, availableStreetOptions, positionOptions);
-      setFieldErrors(nextErrors);
-
-      if (hasErrors(nextErrors)) {
-        setErrorMessage(applicationFormCopy.errors.validationFailed);
-        setStatus("error");
-        return;
-      }
-
-      if (!values.privacyConsent) {
-        setErrorMessage(applicationFormCopy.errors.privacyConsent);
-        setStatus("error");
-        return;
-      }
-
-      setStatus("submitting");
-      setErrorMessage(null);
+      submissionLockRef.current = true;
 
       try {
+        if (!hasAvailablePositions) {
+          setErrorMessage(applicationFormCopy.errors.noAvailablePositions);
+          setStatus("error");
+          return;
+        }
+
+        const nextErrors = validateFields(values, availableStreetOptions, positionOptions);
+        setFieldErrors(nextErrors);
+
+        if (hasErrors(nextErrors)) {
+          setErrorMessage(applicationFormCopy.errors.validationFailed);
+          setStatus("error");
+          return;
+        }
+
+        if (!values.privacyConsent) {
+          setErrorMessage(applicationFormCopy.errors.privacyConsent);
+          setStatus("error");
+          return;
+        }
+
+        setStatus("submitting");
+        setErrorMessage(null);
+
         const submissionPayload: ApplicationSubmissionPayload = {
           firstName: values.firstName.trim(),
           lastName: values.lastName.trim(),
@@ -270,6 +277,8 @@ export const useApplicationForm = ({
           error instanceof Error ? error.message : "Unexpected error occurred.";
         setErrorMessage(message);
         setStatus("error");
+      } finally {
+        submissionLockRef.current = false;
       }
     },
     [

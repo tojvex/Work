@@ -80,9 +80,9 @@ export async function POST(request: Request) {
 
   const worksheet = resolveWorksheetForSubmission(payload);
 
-  await appendApplicationRow({ ...payload, phone }, worksheet);
+  const result = await appendApplicationRow({ ...payload, phone }, worksheet);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, duplicate: result.duplicate });
   } catch (error) {
     console.error("Form submission failed", error);
 
