@@ -261,13 +261,32 @@ export const useApplicationForm = ({
           body: JSON.stringify(submissionPayload),
         });
 
+        const payload = await response.json().catch(() => null);
+
         if (!response.ok) {
-          const payload = await response.json().catch(() => null);
+          if (payload?.duplicate) {
+            const message =
+              applicationFormCopy.errors.duplicate ??
+              "You already submitted recently. Please wait a few minutes and try again.";
+            setErrorMessage(message);
+            setStatus("error");
+            return;
+          }
+
           const message =
             payload?.message ??
             payload?.error ??
             "Unable to submit the form right now.";
           throw new Error(message);
+        }
+
+        if (payload?.duplicate) {
+          const message =
+            applicationFormCopy.errors.duplicate ??
+            "You already submitted recently. Please wait a few minutes and try again.";
+          setErrorMessage(message);
+          setStatus("error");
+          return;
         }
 
         setStatus("success");

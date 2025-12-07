@@ -82,7 +82,18 @@ export async function POST(request: Request) {
 
   const result = await appendApplicationRow({ ...payload, phone }, worksheet);
 
-    return NextResponse.json({ success: true, duplicate: result.duplicate });
+  if (result.duplicate) {
+    return NextResponse.json(
+      {
+        success: false,
+        duplicate: true,
+        message: "Duplicate submission detected. Please wait a few minutes and try again.",
+      },
+      { status: 409 },
+    );
+  }
+
+    return NextResponse.json({ success: true, duplicate: false });
   } catch (error) {
     console.error("Form submission failed", error);
 

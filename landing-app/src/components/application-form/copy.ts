@@ -38,6 +38,7 @@ export const applicationFormCopy = {
     validationFailed: "გთხოვთ შეასწოროთ მონიშნული ველები.",
     privacyConsent: "გთხოვთ დათანხმდეთ პერსონალური მონაცემების გაზიარებას.",
     noAvailablePositions: "ამჟამად პოზიციები არ არის ხელმისაწვდომი. გთხოვთ, მოგვიანებით სცადეთ.",
+    duplicate: "თქვენი განაცხადი უკვე მიღებულია.",
     required: "გთხოვთ შეავსოთ ველი",           // global fallback                                                                             
     requiredFirstName: "გთხოვთ შეიყვანოთ სახელი",                                                                                               
     requiredLastName: "გთხოვთ შეიყვანოთ გვარი",                                                                                                 
