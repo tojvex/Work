@@ -11,17 +11,18 @@ export default function IntroDoor() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasCheckedVisit, setHasCheckedVisit] = useState(false);
 
-  // Show only on first visit; skip on refresh or return visits.
+  // Show on first visit of each browser session (sessionStorage resets per tab/window).
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    const hasSeenIntro = window.localStorage.getItem(INTRO_STORAGE_KEY) === "1";
+    const storage = window.sessionStorage;
+    const hasSeenIntro = storage.getItem(INTRO_STORAGE_KEY) === "1";
 
     if (!hasSeenIntro) {
       setIsVisible(true);
-      window.localStorage.setItem(INTRO_STORAGE_KEY, "1");
+      storage.setItem(INTRO_STORAGE_KEY, "1");
     }
 
     setHasCheckedVisit(true);
