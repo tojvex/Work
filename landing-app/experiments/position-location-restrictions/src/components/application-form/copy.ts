@@ -1,0 +1,55 @@
+export const applicationFormCopy = {
+  header: "გთხოვთ შეავსოთ ქვემოთ მოცემული ფორმა",
+  labels: {
+    firstName: "სახელი",
+    lastName: "გვარი",
+    phone: "ტელეფონის ნომერი",
+    position: "სასურველი პოზიცია",
+    schedule: "გამოცდილება",
+    location: "ლოკაცია",
+    streets: "ფილიალი",
+    privacy: "თანხმობა პერსონალური მონაცემების გაზიარებაზე",
+  },
+  placeholders: {
+    firstName: "ჩაწერე სახელი",
+    lastName: "ჩაწერე გვარი",
+    phone: "ჩაწერე 9 ციფრი (მაგ. 5XXXXXXXX)",
+    position: "მიუთითე სასრუველი პოზიცია",
+    schedule: "მიუთითე შენი გამოცდილება",
+    location: "მიუთითე სასურველი ლოკაცია",
+  },
+  helpers: {
+    streets: "აირჩიე ერთი ან მეტი ფილიალი",
+  },
+  options: {
+    positionDisabledSuffix: " (დროებით მიუწვდომელი)",
+    noPositions: "ამჟამად პოზიციები არ არის ხელმისაწვდომი. გთხოვთ, მოგვიანებით სცადეთ.",
+  },
+  submit: {
+    idle: "გაგზავნა",
+    submitting: "იგზავნება...",
+  },
+  errors: {
+    firstNameInvalid: "გთხოვთ ჩაწერეთ სახელი მხოლოდ ასოებით",
+    lastNameInvalid: "გთხოვთ ჩაწერეთ გვარი მხოლოდ ასოებით",
+    phoneInvalid: "გთხოვთ ჩაწერეთ ვალიდური ნომერი (მაგ. 5XXXXXXXX)",
+    positionNotFound: "არჩეული პოზიცია არ არის ვალიდური.",
+    positionUnavailable: "არჩეული პოზიცია არ არის ხელმისაწვდომი.",
+    validationFailed: "გთხოვთ შეასწოროთ მონიშნული ველები.",
+    privacyConsent: "გთხოვთ დათანხმდეთ პერსონალური მონაცემების გაზიარებას.",
+    noAvailablePositions: "ამჟამად პოზიციები არ არის ხელმისაწვდომი. გთხოვთ, მოგვიანებით სცადეთ.",
+    duplicate: "თქვენი განაცხადი უკვე მიღებულია.",
+    required: "გთხოვთ შეავსოთ ველი",           // global fallback                                                                             
+    requiredFirstName: "გთხოვთ შეიყვანოთ სახელი",                                                                                               
+    requiredLastName: "გთხოვთ შეიყვანოთ გვარი",                                                                                                 
+    requiredPhone: "გთხოვთ შეიყვანოთ ტელეფონის ნომერი",                                                                                            
+    requiredSchedule: "გთხოვთ აირჩიოთ გამოცდილება",                                                                                                      
+    requiredLocation: "გთხოვთ აირჩიოთ ლოკაცია",                                                                                                      
+    requiredPosition: "გთხოვთ აირჩიოთ პოზიცია",                                                                                                    
+    requiredStreet: "გთხოვთ აირჩიოთ ერთი ან მეტი ფილიალი",                                                                                             
+    locationUnavailable: "Selected location is not available for this position.",
+    streetUnavailable: "Selected street is not available for this position and location.",
+    // ...existing error strings
+  },
+  success: "გმადლობთ! თქვენი განაცხადი წარმატებით გაიგზავნა.",
+};
