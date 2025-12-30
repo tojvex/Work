@@ -40,16 +40,16 @@ const sharedLocationOptions = ["თბილისი", "ბათუმი"];
 
 export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   security: {
-    positionOptions: [{ label: "დაცვის თანამშრომელი", availableDay: false, availableNight: false }],
+    positionOptions: [{ label: "დაცვის თანამშრომელი", availableDay: true, availableNight: true }],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   kitchen: {
     positionOptions: [
-      { label: "ცხელი კერძების მზარეული", availableDay: false, availableNight: false },
-      { label: "ცივი კერძების მზარეული", availableDay: false, availableNight: false },
+      { label: "ცხელი კერძების მზარეული", availableDay: true, availableNight: false },
+      { label: "ცივი კერძების მზარეული", availableDay: true, availableNight: false },
       { label: "მზარეულის დამხმარე", availableDay: false, availableNight: false },
-      { label: "სუშის მზარეული", availableDay: true, availableNight: false },
+      { label: "სუშის მზარეული", availableDay: false, availableNight: false },
       { label: "კონდიტერი", availableDay: false, availableNight: false },
       { label: "ჭურჭლის მრეცხავი", availableDay: false, availableNight: false },
       { label: "ხინკლის ცომის სპეციალისტი", availableDay: false, availableNight: false },
@@ -61,7 +61,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
     positionOptions: [
       { label: "პურ-ფუნთუშეულის მცხობელი", availableDay: false, availableNight: false },
       { label: "თონის პურის მცხობელი", availableDay: false, availableNight: false },
-      { label: "ხაჭაპურის მცხობელი", availableDay: true, availableNight: false },
+      { label: "ხაჭაპურის მცხობელი", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
@@ -76,14 +76,14 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   cashier: {
     positionOptions: [
-      { label: "მოლარე", availableDay: true, availableNight: false },
+      { label: "მოლარე", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
   },
   cashiernight: {
     positionOptions: [
-      { label: "ღამის ცვლის მოლარე", availableDay: false, availableNight: true },
+      { label: "ღამის ცვლის მოლარე", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
@@ -104,7 +104,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   warehouse: {
     positionOptions: [
-      { label: "საწყობის თანამშრომელი", availableDay: false, availableNight: false },
+      { label: "საწყობის თანამშრომელი", availableDay: true, availableNight: false },
       { label: "წარმოების დამხმარე თანამშრომელი", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
@@ -120,7 +120,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   deliverynight: {
     positionOptions: [
-      { label: "ღამის მიტანის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: true },
+      { label: "ღამის მიტანის სერვისის კონსულტანტი(ფიქერი)", availableDay: false, availableNight: false },
    
     ],
     scheduleOptions: sharedScheduleOptions,

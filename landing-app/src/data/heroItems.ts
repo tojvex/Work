@@ -94,8 +94,8 @@ export type HeroItemWithCard = HeroItem & { card: HeroCardDetails };
 export const heroItems: HeroItem[] = [
   {
     id: "security",
-    availableDay: false,
-    availableNight: false,
+    availableDay: true,
+    availableNight: true,
     lightSrc: Security,
     darkSrc: Security,
     hoverLightSrc: SecurityHover,
@@ -114,7 +114,7 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "baker",
-    availableDay: true,
+    availableDay: false,
     availableNight: false,
     lightSrc: Baker,
     darkSrc: Baker,
@@ -192,8 +192,8 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "cashier",
-    availableDay: true,
-    availableNight: true,
+    availableDay: false,
+    availableNight: false,
     lightSrc: Cashier,
     darkSrc: Cashier,
     hoverLightSrc: CashierHover,
@@ -241,7 +241,7 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "warehouse",
-    availableDay: false,
+    availableDay: true,
     availableNight: false,
     lightSrc: Warehouse,
     darkSrc: Warehouse,
