@@ -141,8 +141,13 @@ export const getApplicationOptions = (
   cardId: string | null | undefined,
   shift: Shift,
 ): ResolvedApplicationOptionSet => {
+  const fallbackOptions: ApplicationOptionSet = {
+    positionOptions: [],
+    scheduleOptions: sharedScheduleOptions,
+    locationOptions: sharedLocationOptions,
+  };
   const base = cardId ? applicationOptionsByCard[cardId] : undefined;
-  const fallback = base ?? applicationOptionsByCard.default;
+  const fallback = base ?? fallbackOptions;
 
   return {
     positionOptions: resolvePositionOptions(fallback.positionOptions, shift),

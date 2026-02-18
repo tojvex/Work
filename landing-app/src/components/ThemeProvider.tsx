@@ -39,9 +39,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const storedTheme = getStoredTheme();
-    if (storedTheme) {
-      setThemeState(storedTheme);
+    if (!storedTheme) {
+      return;
     }
+
+    const timer = window.setTimeout(() => {
+      setThemeState(storedTheme);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {

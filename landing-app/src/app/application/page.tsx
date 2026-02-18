@@ -15,6 +15,8 @@ import {
 import { HEADLINE, heroItems } from "@/data/heroItems";
 import { toMtavruli } from "@/utils/georgian";
 
+const SHIFT_LOCKED_IDS = new Set(["cashier", "service", "delivery"]);
+
 export default function ApplicationPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#dedddd]" />}>
@@ -45,7 +47,6 @@ function ApplicationPageContent() {
         : heroItem.availableDay
       : false);
 
-  const SHIFT_LOCKED_IDS = new Set(["cashier", "service", "delivery"]);
   useEffect(() => {
     if (!resolved.heroId || !SHIFT_LOCKED_IDS.has(resolved.heroId)) {
       return;

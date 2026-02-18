@@ -9,7 +9,6 @@ const INTRO_STORAGE_KEY = "introDoorSeen";
 export default function IntroDoor() {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [hasCheckedVisit, setHasCheckedVisit] = useState(false);
 
   // Show on first visit of each browser session (sessionStorage resets per tab/window).
   useEffect(() => {
@@ -20,12 +19,18 @@ export default function IntroDoor() {
     const storage = window.sessionStorage;
     const hasSeenIntro = storage.getItem(INTRO_STORAGE_KEY) === "1";
 
-    if (!hasSeenIntro) {
-      setIsVisible(true);
-      storage.setItem(INTRO_STORAGE_KEY, "1");
+    if (hasSeenIntro) {
+      return;
     }
 
-    setHasCheckedVisit(true);
+    storage.setItem(INTRO_STORAGE_KEY, "1");
+    const timer = window.setTimeout(() => {
+      setIsVisible(true);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -54,10 +59,6 @@ export default function IntroDoor() {
       window.clearTimeout(timer);
     };
   }, [isOpen]);
-
-  if (!hasCheckedVisit && !isVisible) {
-    return null;
-  }
 
   if (!isVisible) {
     return null;
