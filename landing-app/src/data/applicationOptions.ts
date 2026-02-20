@@ -23,6 +23,44 @@ export type ResolvedApplicationOptionSet = {
   locationOptions: string[];
 };
 
+const positionTrackingSlugByLabel: Record<string, string> = {
+  "დაცვის თანამშრომელი": "dacvis-tanamshromeli",
+  "ცხელი კერძების მზარეული": "cxeli-kerdzebis-mzareuli",
+  "ცივი კერძების მზარეული": "civi-kerdzebis-mzareuli",
+  "მზარეულის დამხმარე": "mzareulis-damxmare",
+  "სუშის მზარეული": "sushis-mzareuli",
+  "კონდიტერი": "konditeri",
+  "ჭურჭლის მრეცხავი": "churchlis-mrecxavi",
+  "ხინკლის ცომის სპეციალისტი": "xinklis-comis-specialisti",
+  "პურ-ფუნთუშეულის მცხობელი": "pur-funtusheulis-mcxobeli",
+  "თონის პურის მცხობელი": "tonis-puris-mcxobeli",
+  "ხაჭაპურის მცხობელი": "xachapuris-mcxobeli",
+  "თევზის ყასაბი": "tevzis-yasabi",
+  "ხორცის ყასაბი": "xorcis-yasabi",
+  "მოლარე": "molare",
+  "ღამის ცვლის მოლარე": "ghamis-cvlis-molare",
+  "კონსულტანტი": "konsulanti",
+  "ღამის ცვლის კონსულტანტი": "ghamis-cvlis-konsulanti",
+  "საწყობის თანამშრომელი": "sawyobis-tanamshromeli",
+  "წარმოების დამხმარე თანამშრომელი": "warmoebis-damxmare-tanamshromeli",
+  "მიტანის სერვისის კონსულტანტი(ფიქერი)": "mitanis-servisis-konsulanti-piqeri",
+  "ღამის მიტანის სერვისის კონსულტანტი(ფიქერი)": "ghamis-mitanis-servisis-konsulanti-fiqeri",
+};
+
+const positionLabelByTrackingSlug: Record<string, string> = Object.fromEntries(
+  Object.entries(positionTrackingSlugByLabel).map(([label, slug]) => [slug, label]),
+);
+
+export const getPositionTrackingSlug = (positionLabel: string): string => {
+  const normalizedLabel = positionLabel.trim();
+  return positionTrackingSlugByLabel[normalizedLabel] ?? "unknown-pozicia";
+};
+
+export const getPositionLabelFromTrackingSlug = (trackingSlug: string): string | null => {
+  const normalizedSlug = trackingSlug.trim().toLowerCase();
+  return positionLabelByTrackingSlug[normalizedSlug] ?? null;
+};
+
 export const streetOptionsByCity: Record<string, string[]> = {
   "თბილისი": [
     "მარშალ გელოვანის გამზირი #22",

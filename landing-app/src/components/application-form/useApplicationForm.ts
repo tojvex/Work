@@ -6,8 +6,13 @@ import {
   useState,
   type FormEvent,
 } from "react";
+import { useRouter } from "next/navigation";
 
-import { streetOptionsByCity, type ResolvedPositionOption } from "@/data/applicationOptions";
+import {
+  getPositionTrackingSlug,
+  streetOptionsByCity,
+  type ResolvedPositionOption,
+} from "@/data/applicationOptions";
 
 import {
   createFieldErrorsState,
@@ -100,6 +105,7 @@ export const useApplicationForm = ({
   scheduleOptions,
   locationOptions,
 }: ApplicationFormProps) => {
+  const router = useRouter();
   const [values, setValues] = useState<ApplicationFormValues>(initialValues);
   const [status, setStatus] = useState<ApplicationFormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -290,7 +296,9 @@ export const useApplicationForm = ({
         }
 
         setStatus("success");
+        const trackingSlug = getPositionTrackingSlug(values.preferredPosition);
         resetForm();
+        router.push(`/thank-you/${trackingSlug}`);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unexpected error occurred.";
@@ -305,6 +313,7 @@ export const useApplicationForm = ({
       hasAvailablePositions,
       positionOptions,
       resetForm,
+      router,
       values,
     ],
   );
