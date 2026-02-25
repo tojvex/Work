@@ -84,8 +84,8 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   kitchen: {
     positionOptions: [
-      { label: "ცხელი კერძების მზარეული", availableDay: true, availableNight: false },
-      { label: "ცივი კერძების მზარეული", availableDay: true, availableNight: false },
+      { label: "ცხელი კერძების მზარეული", availableDay: false, availableNight: false },
+      { label: "ცივი კერძების მზარეული", availableDay: false, availableNight: false },
       { label: "მზარეულის დამხმარე", availableDay: false, availableNight: false },
       { label: "სუშის მზარეული", availableDay: false, availableNight: false },
       { label: "კონდიტერი", availableDay: false, availableNight: false },
@@ -114,7 +114,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   cashier: {
     positionOptions: [
-      { label: "მოლარე", availableDay: false, availableNight: false },
+      { label: "მოლარე", availableDay: true, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
     locationOptions: sharedLocationOptions,
@@ -142,7 +142,7 @@ export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   },
   warehouse: {
     positionOptions: [
-      { label: "საწყობის თანამშრომელი", availableDay: true, availableNight: false },
+      { label: "საწყობის თანამშრომელი", availableDay: false, availableNight: false },
       { label: "წარმოების დამხმარე თანამშრომელი", availableDay: false, availableNight: false },
     ],
     scheduleOptions: sharedScheduleOptions,
