@@ -74,7 +74,7 @@ export const streetOptionsByCity: Record<string, string[]> = {
 };
 
 const sharedScheduleOptions = ["არ მაქვს", "მაქვს 1 წლამდე", "მაქვს 1 წელზე მეტი"];
-const sharedLocationOptions = ["თბილისი", "ბათუმი"];
+const sharedLocationOptions = ["თბილისი"];
 
 export const applicationOptionsByCard: Record<string, ApplicationOptionSet> = {
   security: {
