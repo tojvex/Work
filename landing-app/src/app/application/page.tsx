@@ -26,7 +26,7 @@ export default function ApplicationPage() {
 }
 
 function ApplicationPageContent() {
-  const { isDarkTheme, toggleTheme } = useTheme();
+  const { isDarkTheme, setTheme, toggleTheme } = useTheme();
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -52,11 +52,35 @@ function ApplicationPageContent() {
       return;
     }
 
-    const targetCard = isDarkTheme ? `${resolved.heroId}night` : `${resolved.heroId}day`;
-    if (resolved.cardKey !== targetCard) {
+    const targetSuffix = resolved.shift === "night" ? "night" : "day";
+    const targetCard = `${resolved.heroId}${targetSuffix}`;
+    const normalizedRawCard = rawCardId?.toLowerCase();
+
+    if (normalizedRawCard !== targetCard) {
       router.replace(`/application?card=${encodeURIComponent(targetCard)}`);
     }
-  }, [isDarkTheme, resolved.cardKey, resolved.heroId, router]);
+  }, [rawCardId, resolved.heroId, resolved.shift, router]);
+
+  useEffect(() => {
+    if (!resolved.heroId || !SHIFT_LOCKED_IDS.has(resolved.heroId)) {
+      return;
+    }
+
+    const shouldUseDarkTheme = resolved.shift === "night";
+    if (isDarkTheme !== shouldUseDarkTheme) {
+      setTheme(shouldUseDarkTheme ? "dark" : "light");
+    }
+  }, [isDarkTheme, resolved.heroId, resolved.shift, setTheme]);
+
+  const handleToggleTheme = () => {
+    if (!resolved.heroId || !SHIFT_LOCKED_IDS.has(resolved.heroId)) {
+      toggleTheme();
+      return;
+    }
+
+    const nextSuffix = resolved.shift === "night" ? "day" : "night";
+    router.replace(`/application?card=${encodeURIComponent(`${resolved.heroId}${nextSuffix}`)}`);
+  };
 
   const mtavruliHeadline = toMtavruli(HEADLINE);
 
@@ -69,7 +93,7 @@ function ApplicationPageContent() {
       <HeroHeader
         headline={HEADLINE}
         isDarkTheme={isDarkTheme}
-        onToggleTheme={toggleTheme}
+        onToggleTheme={handleToggleTheme}
       />
       <div className="px-4 pt-5 pb-3 lg:hidden">
         <h1

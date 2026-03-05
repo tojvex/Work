@@ -90,7 +90,7 @@ export default function CardModal({ card, isDarkTheme, onClose }: CardModalProps
     let targetCard = renderedCard.id;
 
     if (CARD_WITH_SHIFT_SUFFIX.has(renderedCard.id)) {
-      const suffix = isDarkTheme ? "dark" : "day";
+      const suffix = isDarkTheme ? "night" : "day";
       targetCard = `${renderedCard.id}${suffix}`;
     }
 
