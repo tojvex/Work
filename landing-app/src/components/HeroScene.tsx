@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
 import type { HeroItem } from "@/data/heroItems";
 import { toMtavruli } from "@/utils/georgian";
 
@@ -24,49 +23,6 @@ export default function HeroScene({
   onSelectItem,
 }: HeroSceneProps) {
   const mtavruliHeadline = toMtavruli(headline);
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return undefined;
-    }
-
-    const sources = new Set<string>();
-
-    items.forEach((item) => {
-      [
-        item.darkSrc,
-        item.hoverDarkSrc,
-        item.mobileDarkSrc,
-        item.mobileHoverDarkSrc,
-        item.card?.image,
-        item.card?.darkImage,
-      ].forEach((asset) => {
-        if (!asset) {
-          return;
-        }
-
-        if (typeof asset === "string") {
-          sources.add(asset);
-          return;
-        }
-
-        if ("src" in asset) {
-          sources.add(asset.src);
-        }
-      });
-    });
-
-    const images = Array.from(sources).map((src) => {
-      const img = new window.Image();
-      img.src = src;
-      return img;
-    });
-
-    return () => {
-      images.forEach((img) => {
-        img.src = "";
-      });
-    };
-  }, [items]);
 
   return (
     <div className="flex w-full max-w-7xl flex-col items-stretch lg:items-center">
