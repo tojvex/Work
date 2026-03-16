@@ -121,7 +121,6 @@ export default function CardModal({ card, isDarkTheme, onClose }: CardModalProps
           src={cardImage}
           alt={renderedCard.card.heading}
           className="h-auto w-full"
-          priority
           placeholder="blur"
         />
         <button
