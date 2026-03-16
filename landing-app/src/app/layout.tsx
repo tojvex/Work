@@ -23,6 +23,13 @@ const notoSansGeorgian = Noto_Sans_Georgian({
 export const metadata: Metadata = {
   title: "Agrohub",
   description: "join agrohub family",
+  metadataBase: new URL("https://www.agrohubjobs.ge"),
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({

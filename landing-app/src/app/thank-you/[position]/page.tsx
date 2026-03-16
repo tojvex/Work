@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { getPositionLabelFromTrackingSlug } from "@/data/applicationOptions";
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 type ThankYouPageProps = {
   params: Promise<{
