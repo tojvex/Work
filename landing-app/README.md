@@ -104,6 +104,31 @@
   - Optionally configure an Image Optimization loader if hosting assets on a CDN other than     
     Vercel.                                                                                     
                                                                                                 
+  ### Current Production Setup (cPanel / agrohubjobs.ge)                                        
+                                                                                                
+  This project is currently deployed on cPanel as a Node.js app using Next.js standalone output.
+                                                                                                
+  cPanel settings:                                                                              
+  - Application root: `agrohubjobs`                                                             
+  - Application startup file: `server.js`                                                       
+                                                                                                
+  Monthly update flow for enabled/disabled positions:                                           
+  1. Update `src/data/applicationOptions.ts` and/or `src/data/heroItems.ts`.                   
+  2. Run `npm run build` locally.                                                               
+  3. Upload the contents of `.next/standalone` so they land directly in `~/agrohubjobs`.       
+     The correct result is `~/agrohubjobs/server.js`, not `~/agrohubjobs/landing-app/server.js`.
+  4. Upload `.next/static` to `~/agrohubjobs/.next/static`.                                    
+  5. Upload `public` to `~/agrohubjobs/public`.                                                 
+  6. Restart the existing cPanel Node.js app.                                                   
+                                                                                                
+  Important notes:                                                                              
+  - Do not switch the startup file back to `app.js`.                                            
+  - This deployment uses a local build, not `npm run build` on cPanel.                         
+  - If you zip files for cPanel upload, zip the contents of `.next/standalone`, not the parent 
+    folder.                                                                                     
+  - Keep `.next/static` and `public` in sync with each deploy.                                 
+  - Do not upload `.env.local`.                                                                 
+                                                                                                
   ## Maintenance Notes                                                                          
                                                                                                 
   - src/data/heroItems.ts and src/data/applicationOptions.ts centralize content; marketing      

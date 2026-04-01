@@ -1,10 +1,11 @@
   import path from "node:path";                                                                                                            
   import type { NextConfig } from "next";                                                                                                  
                                                                                                                                            
-  const nextConfig: NextConfig = {                                                                                                         
-    turbopack: {                                                                                                                           
-      root: path.dirname(process.cwd()),                                                                                                   
-    },                                                                                                                                     
+const nextConfig: NextConfig = {
+  output: "standalone",
+  turbopack: {
+    root: process.cwd(),
+  },
     typescript: {                                                                                                                          
       ignoreBuildErrors: true,                                                                                                             
     },                                                                                                                                     
