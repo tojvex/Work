@@ -188,7 +188,7 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "cashier",
-    availableDay: false,
+    availableDay: true,
     availableNight: false,
     lightSrc: Cashier,
     darkSrc: Cashier,
