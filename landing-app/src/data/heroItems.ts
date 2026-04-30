@@ -110,7 +110,7 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "baker",
-    availableDay: true,
+    availableDay: false,
     availableNight: false,
     lightSrc: Baker,
     darkSrc: Baker,
@@ -237,7 +237,7 @@ export const heroItems: HeroItem[] = [
   },
   {
     id: "warehouse",
-    availableDay: false,
+    availableDay: true,
     availableNight: false,
     lightSrc: Warehouse,
     darkSrc: Warehouse,
