@@ -128,6 +128,90 @@
     folder.                                                                                     
   - Keep `.next/static` and `public` in sync with each deploy.                                 
   - Do not upload `.env.local`.                                                                 
+  - The homepage is forced to render dynamically so a monthly update should return             
+    `cache-control: private, no-cache, no-store, max-age=0, must-revalidate`.                   
+                                                                                                
+  ### Replacing a Stale `.next` Folder                                                          
+                                                                                                
+  If a normal upload does not update production, stop the cPanel Node.js app and replace        
+  `.next` cleanly instead of merging new files into the old folder:                             
+                                                                                                
+  1. Rename `~/agrohubjobs/.next` to a temporary backup such as                                
+     `~/agrohubjobs/.next-before-update`.                                                       
+  2. Create a fresh `~/agrohubjobs/.next`.                                                      
+  3. Copy the contents of local `.next/standalone/.next` into `~/agrohubjobs/.next`.            
+  4. Copy the contents of local `.next/static` into `~/agrohubjobs/.next/static`.               
+  5. Copy local `.next/standalone/server.js`, `package.json`, and `node_modules` directly into  
+     `~/agrohubjobs`.                                                                           
+  6. Restart the cPanel Node.js app and confirm the startup file is still `server.js`.          
+  7. Keep the backup folder temporarily until production has been verified.                     
+                                                                                                
+  `public` can be skipped when its files did not change. If extraction reports permission       
+  errors for existing files in `public`, check file ownership with `ls -ld ~/agrohubjobs/public`
+  and ask hosting support to restore ownership if needed. Do not use `chmod 777`.               
+                                                                                                
+  ### Stale Homepage Cache Recovery                                                             
+                                                                                                
+  A server cache can occasionally keep serving the previous month's homepage after the new     
+  standalone build has been uploaded and the Node.js app has been restarted. This was observed  
+  on the bare domain while the same deployed build worked with a query string and on the `www`  
+  hostname.                                                                                     
+                                                                                                
+  Check the bare domain and a unique URL from cPanel Terminal:                                  
+                                                                                                
+  ```bash                                                                                       
+  curl -I https://agrohubjobs.ge/                                                               
+  URL="https://agrohubjobs.ge/?cachefix=$(date +%s)"                                           
+  echo "$URL"                                                                                   
+  curl -I "$URL"                                                                                
+  curl -I https://www.agrohubjobs.ge/                                                           
+  ```                                                                                           
+                                                                                                
+  A stale root response can include:                                                            
+                                                                                                
+  ```text                                                                                       
+  x-nextjs-cache: HIT                                                                           
+  x-nextjs-prerender: 1                                                                         
+  cache-control: s-maxage=31536000                                                              
+  x-turbo-charged-by: LiteSpeed                                                                 
+  ```                                                                                           
+                                                                                                
+  The corrected dynamic homepage should return:                                                 
+                                                                                                
+  ```text                                                                                       
+  cache-control: private, no-cache, no-store, max-age=0, must-revalidate                        
+  ```                                                                                           
+                                                                                                
+  Try purging the cached bare-domain page:                                                      
+                                                                                                
+  ```bash                                                                                       
+  curl -i -X PURGE https://agrohubjobs.ge/                                                      
+  curl -i -X PURGE -H "X-LiteSpeed-Purge: *" https://agrohubjobs.ge/                           
+  /usr/local/lsws/admin/misc/purge_cache_by_url -p https://agrohubjobs.ge/                      
+  /usr/local/lsws/admin/misc/purge_cache_by_url -r https://agrohubjobs.ge/                      
+  ```                                                                                           
+                                                                                                
+  If the bare domain remains stale but `https://www.agrohubjobs.ge/` returns the correct build, 
+  add a cPanel redirect under **Domains** -> **Redirects**:                                      
+                                                                                                
+  ```text                                                                                       
+  Type: Temporary (302)                                                                         
+  Domain: agrohubjobs.ge                                                                        
+  Redirects to: https://www.agrohubjobs.ge/                                                     
+  www option: Do Not Redirect www.                                                              
+  Wild Card Redirect: enabled                                                                   
+  ```                                                                                           
+                                                                                                
+  Use `302`, not `301`, while testing. Verify the workaround with:                              
+                                                                                                
+  ```bash                                                                                       
+  curl -I https://agrohubjobs.ge/                                                               
+  ```                                                                                           
+                                                                                                
+  The expected result is `HTTP/1.1 302 Found` with                                              
+  `location: https://www.agrohubjobs.ge/`. If the redirect cannot bypass the stale cache,       
+  contact hosting support and ask them to purge the nginx reverse-proxy cache for               
+  `https://agrohubjobs.ge/`.                                                                     
                                                                                                 
   ## Maintenance Notes                                                                          
                                                                                                 
